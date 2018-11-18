@@ -1,0 +1,17 @@
+{% extends 'configq_base_template.html' %}
+
+{% block title %}
+	<title>question config</title>
+{% endblock %}
+
+{% block content %}
+	<h1> Config Question </h1>
+
+	<form action="{% url 'configq:question_config' %}" method="post">
+	    {% csrf_token %}
+	    {{ form.as_p }}
+	    <input type="submit" value="Submit">
+	</form>
+
+	
+{% endblock %}

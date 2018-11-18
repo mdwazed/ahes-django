@@ -1,0 +1,17 @@
+{% extends 'configq_base_template.html' %}
+{% block title %}
+	<title>question list</title>
+{% endblock %}
+
+
+{% block content %}
+
+	<h1>Question list</h1>
+	<ul>
+		{% for question in questions %}
+			<li>{{ question.questionText }} {{ question.exam }}</li>
+		{% endfor %}	
+	</ul>
+	
+	
+{% endblock %}
