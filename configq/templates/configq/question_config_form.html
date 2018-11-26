@@ -5,13 +5,53 @@
 {% endblock %}
 
 {% block content %}
-	<h1> Config Question </h1>
+	<div class="row">
+		<div class="col-md-6">
+			<h4> Config Question </h4>			
+			<p>Exam: {{ exam }}, Page number: {{ page_number }}</p>
+			<div class="form-group">
+				<form action="{% url 'configq:question_config' %}" method="post">
+				    {% csrf_token %}
+				    <table> {{ form.as_table }} </table>
+		    		<input type="submit" value="Submit">
+				</form>
+			</div>		
+		</div>
+	</div>
 
-	<form action="{% url 'configq:question_config' %}" method="post">
-	    {% csrf_token %}
-	    {{ form.as_p }}
-	    <input type="submit" value="Submit">
-	</form>
-
+	<div class="row question-image" id="question-image">		
+		<!-- <iframe src="/media/questions/1597839_1.png" height="600" width="400"></iframe> -->
+		<img src="/media/{{ image_url }}" alt="question image" height="1754" width="1240" id="myimage">	
+	</div>	
 	
+	<script type="text/javascript">
+		var last_element_clicked
+		function element_clicked(e){
+			last_element_clicked = e.srcElement.id
+		}
+		function MouseTrack(e) {   
+			parentX = document.getElementById('question-image').offsetLeft
+			parentY = document.getElementById('question-image').offsetTop
+        	var Xcoord = (e.pageX-parentX)*2
+           	var Ycoord = (e.pageY-parentY)*2 
+           	// console.log(parentX, parentY)
+           
+           	if (last_element_clicked === 'id_top_left_x' || last_element_clicked === 'id_top_left_y'){
+           		document.getElementById('id_top_left_x').value = Xcoord;
+           		document.getElementById('id_top_left_y').value = Ycoord;
+           	}else if(last_element_clicked === 'id_bottom_right_x' || last_element_clicked === 'id_bottom_right_y'){
+           		document.getElementById('id_bottom_right_x').value = Xcoord;
+           		document.getElementById('id_bottom_right_y').value = Ycoord;
+           	}           
+        }        
+        window.addEventListener("DOMContentLoaded", function(event){
+        	
+			document.getElementById('id_top_left_x').addEventListener("click", element_clicked);
+			document.getElementById('id_top_left_y').addEventListener("click", element_clicked);
+			document.getElementById('id_bottom_right_x').addEventListener("click", element_clicked);
+			document.getElementById('id_bottom_right_y').addEventListener("click", element_clicked);
+			document.querySelector('#question-image').addEventListener('click' , MouseTrack);
+		});
+	</script>
 {% endblock %}
+

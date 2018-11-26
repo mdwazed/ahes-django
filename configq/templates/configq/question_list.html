@@ -6,12 +6,38 @@
 
 {% block content %}
 
-	<h1>Question list</h1>
-	<ul>
-		{% for question in questions %}
-			<li>{{ question.questionText }} {{ question.exam }}</li>
-		{% endfor %}	
-	</ul>
-	
-	
+	<h4>Question list</h4>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Question Number</th><th>Page number</th><th>Question</th><th>Exam</th><th></th><<th></th>			
+			</tr>
+		</thead>
+		<tbody>
+			{% for question in questions %}
+				<tr>
+					<td>{{ question.question_number }}</td>
+					<td>{{ question.page }}</td>
+					<td>{{ question.questionText }}</td>
+					<td>{{ question.exam }}</td>
+					<td>
+						<form action="{% url 'configq:edit_question' %}" method="POST">
+							{% csrf_token %}
+							<input type="hidden" name="question_id" value="{{ question.id }}">
+							<input type="submit" name="submit" value="Edit">
+					
+						</form>
+					</td>
+					<td>
+						<form action="{% url 'configq:delete_question' %}" method="POST">
+							{% csrf_token %}
+							<input type="hidden" name="question_id" value="{{ question.id }}">
+							<input type="submit" name="submit" value="Delete">
+					
+						</form>
+					</td>
+				</tr>			
+			{% endfor %}
+		</tbody>		
+	</table>	
 {% endblock %}

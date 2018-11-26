@@ -1,0 +1,24 @@
+{% extends 'configq_base_template.html' %}
+
+{% block title %}
+	<title>Edit Question</title>
+{% endblock %}
+
+{% block content %}
+	<div class="col-md-8">
+		<h4> Edit question </h4>
+
+		<form action="" method="POST">
+			{% csrf_token %}
+			<table>{{ form }}</table>
+			<input type="hidden" name="question_id" value="{{ current_question.id }}">
+			<input type="hidden" name="exam_id" value="{{ current_question.exam_id }}">
+			<input type="submit" name="submit" value="Save">
+		</form>
+		
+
+	</div>
+	
+
+
+{% endblock %}

@@ -1,7 +1,8 @@
 
-
-<form action="{% url 'get_name' %}" method="post">
+{% load staticfiles %}
+<form action="{% url 'configq:get_name' %}" method="post">
     {% csrf_token %}
     {{ form }}
     <input type="submit" value="Submit">
 </form>
+<img src="/media/questions/1597839_1.png" alt="My image">
