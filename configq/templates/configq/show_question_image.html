@@ -1,0 +1,14 @@
+{% extends 'configq_base_template.html' %}
+{% block title %}
+	<title>question image</title>
+{% endblock %}
+
+
+{% block content %}
+
+	<h4>Image of {{ upload_instance.exam}} page-{{ upload_instance.page }}</h4>
+	<div>
+		<img src="/media/{{ image_url}}" alt="question image" style="width: 90%">
+	</div>
+		
+{% endblock %}

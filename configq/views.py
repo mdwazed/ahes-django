@@ -1,10 +1,14 @@
 from django.shortcuts import render, reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic.list import ListView
+from django.core.exceptions import ObjectDoesNotExist
 
 from . import misc_function
-from .models import Exam, Question, UploadQuestion
-from .forms import NameForm, ExamConfigForm, QuestionConfigForm, QuestionImageUploadForm, UploadForm, PreQuestionConfigForm, SelectExamForm, PageConfigForm, EditQuestionForm
+from .models import Exam, Question, UploadQuestion, PageConfig
+from .forms import (
+	NameForm, ExamConfigForm, QuestionConfigForm, QuestionImageUploadForm, 
+	UploadForm, PreQuestionConfigForm, SelectExamForm, PageConfigForm, EditQuestionForm
+	)
 
 # Create your views here.
 def home(request):
@@ -20,12 +24,17 @@ def select_exam(request):
 	selected exam is added to the swssion var.
 	all further task will be based on this selection.
 	"""
-	form = SelectExamForm(request.POST)
-	if form.is_valid():
-		# check whether selected exam was created by  this user or not.
-		#
-		# if selected exam was created by this user then:
-		misc_function.set_session_var(request, exam=form.cleaned_data.get('exam'))
+	print('selection submitted')
+	if request.method == 'POST':
+		form = SelectExamForm(request.POST)
+		if form.is_valid():
+			# check whether selected exam was created by  this user or not.
+			#
+			# if selected exam was created by this user then:
+			
+			misc_function.set_session_var(request, exam=form.cleaned_data['exam'].id)
+			# print(type(form.cleaned_data['exam'].id))
+
 	return HttpResponseRedirect(reverse('configq:question_image_upload'))
 
 def exam_config(request):
@@ -37,8 +46,9 @@ def exam_config(request):
 		form = ExamConfigForm(request.POST)
 		if form.is_valid():
 			# print(type(form))
-			form.save()
-			return HttpResponseRedirect(reverse('configq:question_config'))
+			new_instance = form.save()
+			misc_function.set_session_var(request, exam=new_instance.id)
+			return HttpResponseRedirect(reverse('configq:question_image_upload'))
 		else:
 			return render(request, 'configq/exam_config_form.html', {'form': form})
 	else:
@@ -72,7 +82,13 @@ def pre_question_config(request):
 
 	else:		
 		form = PreQuestionConfigForm()
-		exam = Exam.objects.get(pk=request.session['exam'])
+		exam = misc_function.get_exam(request)
+		if not exam:
+			context = {
+			'message': """No exam is selected or selected exam is not found for this session. 
+			Please consider select a valid exam from 'exam config page'."""
+			}
+			return render(request, 'configq/common_error.html', context)
 		context = {
 		'form': form,
 		'exam': exam,
@@ -81,32 +97,75 @@ def pre_question_config(request):
 
 def page_config(request):
 	"""
-	configure matriculation number digits loaction and page number box location
+	configure matriculation number digits loaction and page number box location on the page
+	all request must accompany with page_number parameter set
 	"""
-	exam = Exam.objects.get(pk=request.session['exam'])	
-	if request.method == 'POST':
-		pass
-	else:
-		image_url = UploadQuestion.objects.get(exam= exam, page= 1).get_image_url()
-		form = PageConfigForm()
+
+	exam = misc_function.get_exam(request)
+	if not exam:
+		context = {
+		'message': """No exam is selected or selected exam is not found for this session. 
+		Please consider select a valid exam from 'exam config page'."""
+		}
+		return render(request, 'configq/common_error.html', context)
+
+	# data has been entered and submit button has been clicked from page_config page
+	# save the provided data. this form can save partial data(all fields are optional)
+	if request.method == 'POST' and request.POST.get('submit') == 'Submit':
+		page_number = request.POST.get('page_number')
+		upload_question_instance = UploadQuestion.objects.get(exam= exam, page= page_number)
+		form = PageConfigForm(request.POST or None)
+		if form.is_valid():
+			page_config = form.save(commit=False)
+			# page_config.exam = exam 
+			# page_config.page = page_number
+			page_config.upload_question = upload_question_instance
+			page_config.save()
+			if request.POST.get('same_for_all'):
+				print('same for all selected')
+				
+			return HttpResponseRedirect(reverse('configq:question_image_upload'))
+	# 'next' button has been clicked after entering page_number from page_config page
+	# also this point should reach from question upload page by clicking 'config' button 
+	elif request.method == 'POST' and (request.POST.get('submit') == 'Next' or request.POST.get('submit') == 'Config') :		
+		page_number = request.POST.get('page_number')
+		print(page_number)
+		upload_question_instance = UploadQuestion.objects.get(exam= exam, page= page_number)
+		page_config_instance = PageConfig.objects.get(upload_question=upload_question_instance)
+		image_url = upload_question_instance.get_image_url()
+		print(page_config_instance)
+		form = PageConfigForm(instance=page_config_instance or None)
 		context = {
 		'form': form,
 		'exam': exam,
 		'image_url': str(image_url),
+		'page_number': page_number,
 		}
-		# print(form)
+		# print(context)
+		return render(request, 'configq/page_config_form.html', context)
+	else:
+		form = PageConfigForm()
+		context = {
+		'form': form,
+		'exam': exam,
+		}
 		return render(request, 'configq/page_config_form.html', context)
 
 def question_config(request):
 	"""
 	instantiate question objects. set various parameter like loaction of question on the image,
-	question text, question ans etc..
+	question text, question ans etc.. display the related page image and allow
+	to select precise pixel value of ans box by clicking
 	"""
-	
-	exam = Exam.objects.get(pk=request.session['exam'])
+	# retrive selected exam id from session var. returns None in case of exam not set in the session or not found in db
+	exam = misc_function.get_exam(request)
+	if not exam:
+		context = {
+		'message': """No exam is selected or selected exam is not found for this session. 
+		Please consider select a valid exam from 'exam config page'."""
+		}
+		return render(request, 'configq/common_error.html', context)
 	page_number = request.session['page']
-
-
 	if request.method == 'POST':
 		form = QuestionConfigForm(request.POST)
 		if form.is_valid():
@@ -134,12 +193,12 @@ def question_config(request):
 			# print(exam)
 			questionObj.save()
 
-			return HttpResponseRedirect(reverse('configq:pre_question_config'))
+			return HttpResponseRedirect(reverse('configq:question_list'))
 		else:
 			return render(request, 'configq/question_config_form.html', {'form':form})
 	else:
 		form = QuestionConfigForm()
-		image_url = UploadQuestion.objects.get(exam= exam, page= page_number).get_image_url()
+		image_url = UploadQuestion.objects.get(exam= exam, page= page_number).get_image_url() # to display the image with the config form
 		context ={
 		'form': form,
 		'exam': exam,
@@ -152,7 +211,7 @@ def question_config(request):
 
 def edit_question(request):
 	
-	if request.method == 'POST' and request.POST.get('submit') == 'Save':
+	if request.method == 'POST' and request.POST.get('submit') == 'Save': # posted after edit
 	
 		question_id = request.POST.get('question_id')
 		exam_id = request.POST.get('exam_id')
@@ -166,7 +225,7 @@ def edit_question(request):
 			return HttpResponseRedirect(reverse('configq:question_list'))
 		return HttpResponse('form data is not valid')
 		
-	elif request.method == 'POST' and request.POST.get('submit') == 'Edit':		
+	elif request.method == 'POST' and request.POST.get('submit') == 'Edit':	# pasted from question list page through edit button	
 		current_question = Question.objects.get(pk=request.POST.get('question_id'))
 		# question_id = current_question.id
 		# exam_id = current_question.exam_id
@@ -191,7 +250,14 @@ def question_list(request):
 	"""
 	shows all questions of currently working exam
 	"""
-	questions = Question.objects.filter(exam= request.session['exam']).order_by('question_number')
+	exam = misc_function.get_exam(request)
+	if not exam:
+		context = {
+		'message': """No exam is selected or selected exam is not found for this session. 
+		Please consider select a valid exam from 'exam config page'."""
+		}
+		return render(request, 'configq/common_error.html', context)
+	questions = Question.objects.filter(exam= exam).order_by('question_number')
 	return render(request, 'configq/question_list.html', {'questions':questions})
 
 
@@ -201,7 +267,13 @@ def question_image_upload(request):
 	"""
 	upload image of an exam and show the list of already uploaded images
 	"""
-	exam = Exam.objects.get(pk=request.session['exam'])
+	exam = misc_function.get_exam(request)
+	if not exam:
+		context = {
+		'message': """No exam is selected or selected exam is not found for this session. 
+		Please consider select a valid exam from 'exam config page'."""
+		}
+		return render(request, 'configq/common_error.html', context)
 
 	if request.method == "POST":
 		form = QuestionImageUploadForm(request.POST, request.FILES)
@@ -212,57 +284,49 @@ def question_image_upload(request):
 			f.save()
 			
 			form = QuestionImageUploadForm()
-			uploaded_iamges = UploadQuestion.objects.filter(exam=request.session['exam']) # populate list of uploaded images of this exam 
+			uploaded_images = UploadQuestion.objects.filter(exam=request.session['exam']) # populate list of uploaded images of this exam 
 			message = "Image uploaded successfully add another.."
 			context = {
 				'form': form,
 				'message': message,
-				'uploaded_iamges': uploaded_iamges,
+				'uploaded_images': uploaded_images,
 				'exam': exam
 			}
 			return render(request, 'configq/question_image_upload.html', context)
-
-	else:
-		uploaded_iamges = UploadQuestion.objects.filter(exam=request.session['exam']).order_by('page')
+		else:
+			pass
+			####### return something if form is not valid  #######
+	else: # if landed through get method show the blank form and related image
+		uploaded_images = UploadQuestion.objects.filter(exam=request.session['exam']).order_by('page')
 		form = QuestionImageUploadForm()
 		context = {
 			'form': form,
-			'uploaded_iamges': uploaded_iamges,	
+			'uploaded_images': uploaded_images,	
 			'exam': exam
 		}
 		return render(request, 'configq/question_image_upload.html', context)
 
+def show_question_image(request):
+	if request.method == 'POST':
+		image_id = request.POST.get('uploaded_image_id')
+		upload_instance = UploadQuestion.objects.get(pk= image_id)
+		image_url = upload_instance.get_image_url()
+		context = {
+		'upload_instance': upload_instance,
+		'image_url': image_url,
+		}
+
+		return render(request, 'configq/show_question_image.html', context)
 def delete_question_image(request):
 	if request.method == 'POST':
-		print(request)
+		image_id = request.POST.get('uploaded_image_id')
+		upload_instance = UploadQuestion.objects.get(pk= image_id)
+		image_url = upload_instance.get_image_url()
+		upload_instance.delete()
 		# image_url = request
-		return HttpResponse('delete submitted')
+		return HttpResponseRedirect(reverse('configq:question_image_upload'))
 
-############################################################################
-def get_name(request):
-	"""
-	test view for forms andd other testing and experimenting
-	"""
-	if request.method == 'POST':
-		form = NameForm(request.POST)
-		if form.is_valid():
-			print(form.cleaned_data['your_name'])
-			print(form.cleaned_data['favorite_friuts'])
-			return HttpResponseRedirect(reverse('home'))			
-	else:
-		form = NameForm()
-	return render(request, 'configq/name.html', {'form':form})
 
-def upload_file(request):
-	"""
-	test upload functionality
-	"""
-	form = UploadForm()
-	if request.method =="POST":
-		file = request.FILES["file"]
-		return HttpResponse(file)
-	else:
-		return render(request, 'configq/upload.html', {'form': form})
 
 
 

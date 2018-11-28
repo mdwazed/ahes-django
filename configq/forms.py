@@ -9,33 +9,33 @@ FRUIT_CHOICES=[
 ]
 
 
-def get_exam_choices():
-	"""
-	populate 'select widget's choices with exams. 
-	exam objeects pk is value for select to ensure foreign key integrity
-	"""
-	exams = Exam.objects.all()	
-	exam_list=[]
-	for exam in exams:
-
-		key = exam.pk
-		value = exam.course_name.__str__()+ '-' + exam.semester.__str__()
-		exam_list.append((key, value))
-	exam_choices = tuple(exam_list)
-	return exam_choices
+# def get_exam_choices():
+# 	"""
+# 	populate 'select widget's choices with exams. 
+# 	exam objeects pk is value for select to ensure foreign key integrity
+# 	"""
+# 	exams = Exam.objects.all()	
+# 	exam_list=[(None, '------'),]
+# 	for exam in exams:
+# 		key = exam.pk
+# 		value = exam.course_name.__str__()+ '-' + exam.semester.__str__()
+# 		exam_list.append((key, value))
+# 	exam_choices = tuple(exam_list)
+# 	return exam_choices
 
 class SelectExamForm(forms.Form):
-	exam = forms.CharField(widget=forms.Select(choices=get_exam_choices()))
+	# exam = forms.CharField(widget=forms.Select(choices=get_exam_choices()))
+	exam = forms.ModelChoiceField(queryset=Exam.objects.all())
 
 class ExamConfigForm(forms.ModelForm):
 	class Meta:
 		model = Exam
-		fields= ['course_name', 'semester', 'professor', 'credit_point']
+		fields= '__all__'
 
 class PageConfigForm(forms.ModelForm):
 	class Meta:
 		model = PageConfig
-		exclude = ['exam']
+		exclude = ['upload_question']
 
 
 class QuestionImageUploadForm(forms.ModelForm):

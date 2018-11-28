@@ -21,15 +21,56 @@
 				
 	</div>
 	<div class="col-md-8">
-		<p>List of images already uploaded</p>
-		<ul>
-		{% for uploaded_image in uploaded_iamges %}
+		<h4 class="sub-heading">List of images already uploaded</h4>
+		<table class="table">
+		<thead>
+			<tr>
+				<th>Exam</th><th>Page number</th><th>Description</th><th></th><th></th><th></th></tr>			
+			</tr>
+		</thead>
+		<tbody>
+			{% for uploaded_image in uploaded_images %}
+				<tr>
+					<td>{{ uploaded_image.exam }}</td>
+					<td>{{ uploaded_image.page }}</td>
+					<td>{{ uploaded_image.description }}</td>
+					
+					<td>
+						<form action="{% url 'configq:show_question_image' %}" method="POST">
+							{% csrf_token %}
+							<input type="hidden" name="uploaded_image_id" value="{{ uploaded_image.id }}">
+							<input type="submit" name="submit" value="Open">
+					
+						</form>
+					</td>
+					<td>
+						<form action="{% url 'configq:delete_question_image' %}" method="POST">
+							{% csrf_token %}
+							<input type="hidden" name="uploaded_image_id" value="{{ uploaded_image.id }}">
+							<input type="submit" name="submit" value="Delete">
+					
+						</form>
+					</td>
+					<td>
+						<form action="{% url 'configq:page_config' %}" method="POST">
+							{% csrf_token %}
+							<input type="hidden" name="page_number" value="{{ uploaded_image.page }}">
+							<input type="submit" name="submit" value="Config">
+					
+						</form>
+					</td>
+				</tr>			
+			{% endfor %}
+		</tbody>		
+	</table>
+		
+		<!-- {% for uploaded_image in uploaded_iamges %}
 			<li>Exam: {{ uploaded_image.exam }},  Page: {{ uploaded_image.page }} 
 				<a href="/media/{{ uploaded_image.image }}">Open</a> ||				
 				<button type="button" class="btn btn-link">Delete</button>
 			</li>				
-		{% endfor %}
-		</ul>
+		{% endfor %} -->
+		
 	</div>
 	
 	
