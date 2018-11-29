@@ -42,8 +42,16 @@
            	}else if(last_element_clicked === 'id_bottom_right_x' || last_element_clicked === 'id_bottom_right_y'){
            		document.getElementById('id_bottom_right_x').value = Xcoord;
            		document.getElementById('id_bottom_right_y').value = Ycoord;
-           	}           
-        }        
+           	}  
+           	put_marker(e);         
+        } 
+        function put_marker(e){
+        	parentX = document.getElementById('question-image').offsetLeft
+			parentY = document.getElementById('question-image').offsetTop
+        	var Xcoord = e.pageX-parentX;
+        	var Ycoord = e.pageY-parentY;
+        	console.log(Xcoord, Ycoord)
+        }       
         window.addEventListener("DOMContentLoaded", function(event){
         	
 			document.getElementById('id_top_left_x').addEventListener("click", element_clicked);

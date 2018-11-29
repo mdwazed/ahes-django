@@ -21,7 +21,7 @@ def home(request):
 def select_exam(request):
 	"""
 	provide option to select the exams which was created by this user.(need to add this functionality) 
-	selected exam is added to the swssion var.
+	selected exam is added to the session var.
 	all further task will be based on this selection.
 	"""
 	print('selection submitted')
@@ -123,7 +123,9 @@ def page_config(request):
 			page_config.save()
 			if request.POST.get('same_for_all'):
 				print('same for all selected')
-				
+				## set the same parameter to all page of currently selected exam
+				misc_function.set_all_page_config(request, page_config)#currently populated page
+
 			return HttpResponseRedirect(reverse('configq:question_image_upload'))
 	# 'next' button has been clicked after entering page_number from page_config page
 	# also this point should reach from question upload page by clicking 'config' button 
@@ -161,7 +163,7 @@ def question_config(request):
 	exam = misc_function.get_exam(request)
 	if not exam:
 		context = {
-		'message': """No exam is selected or selected exam is not found for this session. 
+		'message': """No exam is selected or selected exam is not found. 
 		Please consider select a valid exam from 'exam config page'."""
 		}
 		return render(request, 'configq/common_error.html', context)
@@ -325,9 +327,3 @@ def delete_question_image(request):
 		upload_instance.delete()
 		# image_url = request
 		return HttpResponseRedirect(reverse('configq:question_image_upload'))
-
-
-
-
-
-
