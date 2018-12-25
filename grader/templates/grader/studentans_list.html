@@ -1,0 +1,27 @@
+{% extends 'grader_base_template.html' %}
+
+{% block title %}
+    <title>Home</title>
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-8">
+        <div>
+            <h4> Ans List </h4>          
+        </div>
+        <div>
+            <ul>
+                {% for ans in object_list %}
+                    <li>
+                        {{ ans.question_num }} - {{ ans.students_ans }} - {{ ans.matriculation_num }}
+                        
+                    </li>
+                {% endfor %}
+                <form action="{% url 'grader:delete_ans' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="submit" name="submit" value="Delete all">                    
+                </form>
+            </ul>           
+        </div>      
+    </div>
+{% endblock %}

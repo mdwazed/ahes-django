@@ -18,11 +18,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from . import views
 
-urlpatterns = [
-   
+urlpatterns = [   
+    path('', views.home, name='ahes_home'),
     path('admin/', admin.site.urls),
     path('config/', include('configq.urls')),
+    path('grader/', include('grader.urls')),
 ]
 
 if settings.DEBUG:

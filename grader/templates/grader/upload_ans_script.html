@@ -1,0 +1,22 @@
+{% extends 'grader_base_template.html' %}
+
+{% block title %}
+    <title>Home</title>
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-8">
+        <div>
+            <h4> upload ans script </h4>          
+        </div>
+        <div>
+           
+                <form action="{% url 'grader:upload_ans_script' %}" method="POST">
+                    {% csrf_token %}
+                    {{ form }}
+                    <input type="submit" name="submit" value="Delete all">                    
+                </form>
+                 
+        </div>      
+    </div>
+{% endblock %}
