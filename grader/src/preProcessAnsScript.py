@@ -123,6 +123,9 @@ class ansScript:
 		print(str(self.unreadFileCount) + ' files couldn\'t read. copied to unread dir')
 
 	def readAns(self, request):
+		"""
+		scan all cleaned image, read student ans and save the ans to data base
+		"""
 		print('Reading answer sheets....')
 		current_exam = get_exam(request)
 		current_exam_id = str(current_exam.id)
@@ -157,7 +160,9 @@ class ansScript:
 						question_num=questionNo,
 						students_ans= ans,
 					)
-					student_ans.save()
+
+					student_ans.save() ### save students ans to dbase
+
 					studentsAns.append([mat_number, questionNo, ans])
 					
 
@@ -165,6 +170,7 @@ class ansScript:
 		with open(student_ans_file, 'w') as outfile:
 			json.dump(studentsAns, outfile)
 		print('Answers saved successfully.')
+
 
 	def move_image_to_cleaned_image(self, request, imageName, im, mat_number, page_number):
 		exam_id = get_exam(request).id		

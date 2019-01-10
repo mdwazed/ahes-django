@@ -7,6 +7,8 @@ from .models import StudentAns
 from .forms import UploadAnsScriptForm
 
 from grader.src.preProcessAnsScript import ansScript
+from grader.src import ans_grader
+
 
 # Create your views here.
 
@@ -32,8 +34,10 @@ def home(request):
 		ansc = ansScript()
 		ansc.processAnsScript(request)
 		ansc.readAns(request)
+		ans_grader.grade_all_ans(request)
+		
 		context ={
-			'success_message':'processing ans script complete',
+			'success_message':'ans script processing complete',
 		}
 		return HttpResponseRedirect(reverse('grader:ans_list'))
 	else:

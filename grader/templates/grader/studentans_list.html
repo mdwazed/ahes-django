@@ -13,7 +13,7 @@
             <ul>
                 {% for ans in object_list %}
                     <li>
-                        {{ ans.question_num }} - {{ ans.students_ans }} - {{ ans.matriculation_num }}
+                        {{ ans.question_num }} - {{ ans.students_ans }} - {{ans.matching_confidence}} - {{ ans.matriculation_num }}
                         
                     </li>
                 {% endfor %}
