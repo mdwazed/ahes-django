@@ -3,6 +3,9 @@ this class ues nltk to remove stop word and tokenize/lemmatize the ans.
 compare two stem seq/sentence and return confidence value of similarities between them
 
 """
+import math
+
+
 from difflib import SequenceMatcher
 import nltk
 from nltk.corpus import stopwords, wordnet
@@ -35,6 +38,9 @@ class Stemmer():
         stems = [stemmer.stem(x) for x in word_seq]
         return stems
 
+    def sent_2_stem(self, sent):
+        return self.create_stem(self.remove_stop_word(sent))
+
     def get_confidence(self, stem_seq, students_ans):
         """
         compare students ans with stem seq (probably examiners ans stem) and return confidence level 
@@ -47,7 +53,7 @@ class Stemmer():
         for stem in stem_seq:
             if stem in stem_syn:
                 count +=1
-        return (count/len(stem_seq))
+        return round((count/len(stem_seq)), 2)
 
     def compare_sentence(self, sent1, sent2):
         """
@@ -95,10 +101,12 @@ if __name__ == "__main__":
     sent3 = "i really dont dont know what algorithm is. but i certainly know it is used in computer to solve a porblem."
 
     stemmer = Stemmer()
-    examiners_ans = stemmer.remove_stop_word(sent1)
-    examiners_ans = stemmer.create_stem(examiners_ans)
-    confidence = stemmer.get_confidence(examiners_ans, sent2)
-    print(confidence)
-    confidence = stemmer.get_confidence(examiners_ans, sent3)
-    print(confidence)
+    # examiners_ans = stemmer.remove_stop_word(sent1)
+    # examiners_ans = stemmer.create_stem(examiners_ans)
+    # confidence = stemmer.get_confidence(examiners_ans, sent2)
+    # print(confidence)
+    # confidence = stemmer.get_confidence(examiners_ans, sent3)
+    # print(confidence)
 
+    stems = stemmer.sent_2_stem(sent1)
+    print(stems)
