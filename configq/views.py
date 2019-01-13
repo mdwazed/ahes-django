@@ -124,18 +124,18 @@ def page_config(request):
 			if request.POST.get('same_for_all'):
 				print('same for all selected')
 				## set the same parameter to all page of currently selected exam
-				misc_function.set_all_page_config(request, page_config)#currently populated page
+				misc_function.set_all_page_config(request, page_config)  #currently populated page
 
 			return HttpResponseRedirect(reverse('configq:question_image_upload'))
 	# 'next' button has been clicked after entering page_number from page_config page
 	# also this point should reach from question upload page by clicking 'config' button 
 	elif request.method == 'POST' and (request.POST.get('submit') == 'Next' or request.POST.get('submit') == 'Config') :		
 		page_number = request.POST.get('page_number')
-		print(page_number)
+		# print(page_number)
 		upload_question_instance = UploadQuestion.objects.get(exam= exam, page= page_number)
 		page_config_instance = PageConfig.objects.get(upload_question=upload_question_instance)
 		image_url = upload_question_instance.get_image_url()
-		print(page_config_instance)
+		# print(page_config_instance)
 		form = PageConfigForm(instance=page_config_instance or None)
 		context = {
 		'form': form,

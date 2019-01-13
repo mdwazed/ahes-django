@@ -10,12 +10,13 @@
 	<table class="table">
 		<thead>
 			<tr>
-				<th>Question Number</th><th>Page number</th><th>Question</th><th>Answer</th><th>Exam</th><th></th><th></th>			
+				<th>Exam Id</th><th>Question Number</th><th>Page number</th><th>Question</th><th>Answer</th><th>Exam</th><th></th><th></th>			
 			</tr>
 		</thead>
 		<tbody>
 			{% for question in questions %}
 				<tr>
+					<td>{{ question.exam.id }}</td>
 					<td>{{ question.question_number }}</td>
 					<td>{{ question.page }}</td>
 					<td>{{ question.questionText }}</td>

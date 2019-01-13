@@ -36,6 +36,14 @@ class ansScript:
 
 		for imageName in images:
 			print('new iter',imageName)
+			try:
+				pre, name = imageName.split('_')
+			except ValueError:
+				pre = 0
+				print('name doesn\'t contain _' )
+			if(pre != str(get_exam(request).id)):				
+				continue
+
 			fileName = os.path.join(self.rawPath, imageName)
 			with Image.open(fileName) as im:
 				# im = Image.open(fileName)

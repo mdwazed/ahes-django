@@ -207,6 +207,7 @@ def getMatNum(im, mat_locs_tuples):
         # im.show()
         cleanImage = imageprepare(im)
         cleanImList.append(cleanImage)
+    # sys.exit('---myexit---')
     matNoDigit = predictint(cleanImList)
     matNo = [digit[0] for digit in matNoDigit]
     matNo = ''.join(str(i) for i in matNo)

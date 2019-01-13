@@ -24,10 +24,19 @@
 			
 			{% if page_number %}
 				<p>Page number: {{ page_number }}</p>
+                <div>
+                    <label for="quick-setup">Quick setup</label>
+                    <input type="checkbox" name="quick-setup" id="quick-setup" checked>
+                    <p>click 'digit 1 top left x' field then draw box around mat num while check box is checked</p>
+                    <p>click individual field then click on desired location on image while check box is unchecked</p>
+                </div>
 				<div class="form-group">
 					<form action="{% url 'configq:page_config' %}" method="post" id="page_config_form">
 					    {% csrf_token %}
-					    <table>{{ form.as_table }}</table>
+                        <div id="form-div">
+                            <table>{{ form.as_table }}</table>
+                        </div>
+					    
 					    <label><input type="checkbox" name="same_for_all" value="True">Same parameter for all page</label><br>
 					    <input type="hidden" name="page_number" value="{{ page_number }}">
 			    		
@@ -41,24 +50,37 @@
 					
 		</div>
 	</div>
-	{% if page_number %}
+	<!-- {% if page_number %}
 		<div class="row question-image" id="question-image">	
 		<img src="/media/{{ image_url }}" alt="question image" height="1754" width="1240" id="myimage">	
 		</div>
-	{% endif %}
+	{% endif %} -->
+    <div>
+        <p id="coordinate">mouse coord</p>
+    </div>
 
-	
-	<!-- <div id="canvas-div" style="border: 2px solid red">
-		<canvas id="canvas" height="1754" width="1240"></canvas>	
-	</div> -->	
+	{% if page_number %}
+	<div id="canvas-div" >
+		<canvas id="canvas" height="3508" width="2480" style="border: 1px solid #2c3e50; background-image: url(/media/{{ image_url }}); background-size: cover">
+            <!-- <img src="/media/{{ image_url }}" alt="question image" height="1754" width="1240" id="myimage">  -->
+        </canvas>	
+	</div>	
+    {% endif %}
 	
 	<script type="text/javascript">
-		var last_element_clicked
+        var mat_digit_count = document.getElementById('id_mat_digit_count').value;
+		var last_element_clicked;
+        var init_x_coord; 
+        var init_y_coord;
+        var parentX = document.getElementById('canvas').offsetLeft;
+        var parentY = document.getElementById('canvas').offsetTop;
 
 		function reset_form(e){
 			e.preventDefault();
-			form = document.getElementById("page_config_form");
-			console.log(form);
+            inputs = document.getElementById('form-div').querySelectorAll('input');
+            for(i=1;i<inputs.length; i++){
+                inputs[i].value = "";
+            }   
 
 		}
 
@@ -66,89 +88,131 @@
 			last_element_clicked = e.srcElement.id
 		}
 
-		function draw_rect() {
+         /*save the current coord on mouse down event
+         used to draw rect on mouse up*/
+        function record_coord(e){            
+            init_x_coord = (e.pageX-parentX);
+            init_y_coord = (e.pageY-parentY);
+            
+        }
 
+        // fill up all field of mat num and page num on mouse up event
+        function fillCoord(e){
+            quick_setup = document.getElementById('quick-setup').checked;
+            if(quick_setup){
+                var a, b, c, d; //four corner of each box
+                current_x = (e.pageX-parentX);
+                current_y = (e.pageY-parentY);
+                if (last_element_clicked === 'id_mat_digit_1_top_left_x'){  //fill up mat num boxes
+                    digit_box_width = Math.round((current_x - init_x_coord)/mat_digit_count);
+                    digit_box_height = Math.round(current_y - init_y_coord);
+                    for(index=1; index <= mat_digit_count; index++){                
+                        a = Math.round(init_x_coord+((index-1)*digit_box_width))+10;
+                        b = Math.round(init_y_coord)+10;
+                        c = Math.round(init_x_coord+((index-1)*digit_box_width)+digit_box_width)-10;
+                        d = Math.round(init_y_coord + digit_box_height)-10;
+                        document.getElementById('id_mat_digit_' + index + '_top_left_x').value = a;
+                        document.getElementById('id_mat_digit_' + index + '_top_left_y').value = b;
+                        document.getElementById('id_mat_digit_' + index + '_bottom_right_x').value = c; 
+                        document.getElementById('id_mat_digit_' + index + '_bottom_right_y').value = d;
+                        console.log(a +' '+ b +' ' + c +' '+ d);
+                        draw_rect(a, b, (c - a), (d-b));                 
+                    }
+                }else if(last_element_clicked === 'id_page_no_top_left_x'){   //fill up page no boxes
+                    a = Math.round(init_x_coord) +15;
+                    b = Math.round(init_y_coord) + 15;
+                    c = Math.round(current_x) - 15;
+                    d = Math.round(current_y) - 15;
+                    document.getElementById('id_page_no_top_left_x').value = a;
+                    document.getElementById('id_page_no_top_left_y').value = b;
+                    document.getElementById('id_page_no_bottom_right_x').value = c;
+                    document.getElementById('id_page_no_bottom_right_y').value = d;
+                    draw_rect(a, b, (c-a), (d-b));
+                }
+            }
+        }
 
-			// console.log('clicked');
-			var image = document.getElementById("myimage");
-			var canvas = document.getElementById('canvas');
-		
-			// if(image.style.display === 'none'){
-			// 	image.style.display = 'block';
-			// 	canvas.style.display = 'none';
-			// }else{
-			// 	image.style.display = 'none';
-			// 	canvas.style.style = 'block';
-				
-			// 	if (canvas.getContext) {
-				    var context = canvas.getContext('2d');		   
-				    context.drawImage(image, 10, 10, 3508, 2480);
-				    
-			// 	}
-			// }
-			
-			
+		function draw_rect(x, y, width, height) {	
+            // console.log(x,y, width, height);	
+			var canvas = document.getElementById('canvas');			
+		    var context = canvas.getContext('2d');		   
+			context.rect(Math.round(x), Math.round(y), Math.round(width), Math.round(height));
+            context.strokeStyle = "red";
+            context.stroke();
+            // console.log(init_x_coord*2, init_y_coord*2, current_x*2, current_y*2);
+            // console.log(digit_box_width);
 		}
 
+        function displayCoord(e){
+            x_coord = (e.pageX-parentX)*2;
+            y_coord = (e.pageY-parentY)*2;
+            document.getElementById("coordinate").innerHTML = x_coord +' '+ y_coord;
+        }
+
+        // fill up mat and page number field manually if check box is unchecked.
 		function MouseTrack(e) {   
-			parentX = document.getElementById('question-image').offsetLeft
-			parentY = document.getElementById('question-image').offsetTop
-        	var Xcoord = (e.pageX-parentX)*2
-           	var Ycoord = (e.pageY-parentY)*2 
-           	// console.log(parentX, parentY)
-           
-           	if (last_element_clicked === 'id_mat_digit_1_top_left_x' || last_element_clicked === 'id_mat_digit_1_top_left_y'){
-           		document.getElementById('id_mat_digit_1_top_left_x').value = Xcoord;
-           		document.getElementById('id_mat_digit_1_top_left_y').value = Ycoord;
-           	}else if(last_element_clicked === 'id_mat_digit_1_bottom_right_x' || last_element_clicked === 'id_mat_digit_1_bottom_right_y'){
-           		document.getElementById('id_mat_digit_1_bottom_right_x').value = Xcoord;
-           		document.getElementById('id_mat_digit_1_bottom_right_y').value = Ycoord;
-           	}else if (last_element_clicked === 'id_mat_digit_2_top_left_x' || last_element_clicked === 'id_mat_digit_2_top_left_y'){
-           		document.getElementById('id_mat_digit_2_top_left_x').value = Xcoord;
-           		document.getElementById('id_mat_digit_2_top_left_y').value = Ycoord;
-           	}else if(last_element_clicked === 'id_mat_digit_2_bottom_right_x' || last_element_clicked === 'id_mat_digit_2_bottom_right_y'){
-           		document.getElementById('id_mat_digit_2_bottom_right_x').value = Xcoord;
-           		document.getElementById('id_mat_digit_2_bottom_right_y').value = Ycoord;
-           	}else if (last_element_clicked === 'id_mat_digit_3_top_left_x' || last_element_clicked === 'id_mat_digit_3_top_left_y'){
-           		document.getElementById('id_mat_digit_3_top_left_x').value = Xcoord;
-           		document.getElementById('id_mat_digit_3_top_left_y').value = Ycoord;
-           	}else if(last_element_clicked === 'id_mat_digit_3_bottom_right_x' || last_element_clicked === 'id_mat_digit_3_bottom_right_y'){
-           		document.getElementById('id_mat_digit_3_bottom_right_x').value = Xcoord;
-           		document.getElementById('id_mat_digit_3_bottom_right_y').value = Ycoord;
-           	}else if (last_element_clicked === 'id_mat_digit_4_top_left_x' || last_element_clicked === 'id_mat_digit_4_top_left_y'){
-           		document.getElementById('id_mat_digit_4_top_left_x').value = Xcoord;
-           		document.getElementById('id_mat_digit_4_top_left_y').value = Ycoord;
-           	}else if(last_element_clicked === 'id_mat_digit_4_bottom_right_x' || last_element_clicked === 'id_mat_digit_4_bottom_right_y'){
-           		document.getElementById('id_mat_digit_4_bottom_right_x').value = Xcoord;
-           		document.getElementById('id_mat_digit_4_bottom_right_y').value = Ycoord;
-           	}else if (last_element_clicked === 'id_mat_digit_5_top_left_x' || last_element_clicked === 'id_mat_digit_5_top_left_y'){
-           		document.getElementById('id_mat_digit_5_top_left_x').value = Xcoord;
-           		document.getElementById('id_mat_digit_5_top_left_y').value = Ycoord;
-           	}else if(last_element_clicked === 'id_mat_digit_5_bottom_right_x' || last_element_clicked === 'id_mat_digit_5_bottom_right_y'){
-           		document.getElementById('id_mat_digit_5_bottom_right_x').value = Xcoord;
-           		document.getElementById('id_mat_digit_5_bottom_right_y').value = Ycoord;
-           	}else if (last_element_clicked === 'id_mat_digit_6_top_left_x' || last_element_clicked === 'id_mat_digit_6_top_left_y'){
-           		document.getElementById('id_mat_digit_6_top_left_x').value = Xcoord;
-           		document.getElementById('id_mat_digit_6_top_left_y').value = Ycoord;
-           	}else if(last_element_clicked === 'id_mat_digit_6_bottom_right_x' || last_element_clicked === 'id_mat_digit_6_bottom_right_y'){
-           		document.getElementById('id_mat_digit_6_bottom_right_x').value = Xcoord;
-           		document.getElementById('id_mat_digit_6_bottom_right_y').value = Ycoord;
-           	}else if (last_element_clicked === 'id_mat_digit_7_top_left_x' || last_element_clicked === 'id_mat_digit_7_top_left_y'){
-           		document.getElementById('id_mat_digit_7_top_left_x').value = Xcoord;
-           		document.getElementById('id_mat_digit_7_top_left_y').value = Ycoord;
-           	}else if(last_element_clicked === 'id_mat_digit_7_bottom_right_x' || last_element_clicked === 'id_mat_digit_7_bottom_right_y'){
-           		document.getElementById('id_mat_digit_7_bottom_right_x').value = Xcoord;
-           		document.getElementById('id_mat_digit_7_bottom_right_y').value = Ycoord;
-           	}else if (last_element_clicked === 'id_page_no_top_left_x' || last_element_clicked === 'id_page_no_top_left_y'){
-           		document.getElementById('id_page_no_top_left_x').value = Xcoord;
-           		document.getElementById('id_page_no_top_left_y').value = Ycoord;
-           	}else if(last_element_clicked === 'id_page_no_bottom_right_x' || last_element_clicked === 'id_page_no_bottom_right_y'){
-           		document.getElementById('id_page_no_bottom_right_x').value = Xcoord;
-           		document.getElementById('id_page_no_bottom_right_y').value = Ycoord;
-           	}           
-        }        
+            quick_setup = document.getElementById('quick-setup').checked;
+            if(!quick_setup){
+                // parentX = document.getElementById('canvas').offsetLeft;
+                // parentY = document.getElementById('canvas').offsetTop;
+                var Xcoord = (e.pageX-parentX)*2;
+                var Ycoord = (e.pageY-parentY)*2;
+                // console.log(parentX, parentY)
+               
+                if (last_element_clicked === 'id_mat_digit_1_top_left_x' || last_element_clicked === 'id_mat_digit_1_top_left_y'){
+                    document.getElementById('id_mat_digit_1_top_left_x').value = Xcoord;
+                    document.getElementById('id_mat_digit_1_top_left_y').value = Ycoord;
+                }else if(last_element_clicked === 'id_mat_digit_1_bottom_right_x' || last_element_clicked === 'id_mat_digit_1_bottom_right_y'){
+                    document.getElementById('id_mat_digit_1_bottom_right_x').value = Xcoord;
+                    document.getElementById('id_mat_digit_1_bottom_right_y').value = Ycoord;
+                }else if (last_element_clicked === 'id_mat_digit_2_top_left_x' || last_element_clicked === 'id_mat_digit_2_top_left_y'){
+                    document.getElementById('id_mat_digit_2_top_left_x').value = Xcoord;
+                    document.getElementById('id_mat_digit_2_top_left_y').value = Ycoord;
+                }else if(last_element_clicked === 'id_mat_digit_2_bottom_right_x' || last_element_clicked === 'id_mat_digit_2_bottom_right_y'){
+                    document.getElementById('id_mat_digit_2_bottom_right_x').value = Xcoord;
+                    document.getElementById('id_mat_digit_2_bottom_right_y').value = Ycoord;
+                }else if (last_element_clicked === 'id_mat_digit_3_top_left_x' || last_element_clicked === 'id_mat_digit_3_top_left_y'){
+                    document.getElementById('id_mat_digit_3_top_left_x').value = Xcoord;
+                    document.getElementById('id_mat_digit_3_top_left_y').value = Ycoord;
+                }else if(last_element_clicked === 'id_mat_digit_3_bottom_right_x' || last_element_clicked === 'id_mat_digit_3_bottom_right_y'){
+                    document.getElementById('id_mat_digit_3_bottom_right_x').value = Xcoord;
+                    document.getElementById('id_mat_digit_3_bottom_right_y').value = Ycoord;
+                }else if (last_element_clicked === 'id_mat_digit_4_top_left_x' || last_element_clicked === 'id_mat_digit_4_top_left_y'){
+                    document.getElementById('id_mat_digit_4_top_left_x').value = Xcoord;
+                    document.getElementById('id_mat_digit_4_top_left_y').value = Ycoord;
+                }else if(last_element_clicked === 'id_mat_digit_4_bottom_right_x' || last_element_clicked === 'id_mat_digit_4_bottom_right_y'){
+                    document.getElementById('id_mat_digit_4_bottom_right_x').value = Xcoord;
+                    document.getElementById('id_mat_digit_4_bottom_right_y').value = Ycoord;
+                }else if (last_element_clicked === 'id_mat_digit_5_top_left_x' || last_element_clicked === 'id_mat_digit_5_top_left_y'){
+                    document.getElementById('id_mat_digit_5_top_left_x').value = Xcoord;
+                    document.getElementById('id_mat_digit_5_top_left_y').value = Ycoord;
+                }else if(last_element_clicked === 'id_mat_digit_5_bottom_right_x' || last_element_clicked === 'id_mat_digit_5_bottom_right_y'){
+                    document.getElementById('id_mat_digit_5_bottom_right_x').value = Xcoord;
+                    document.getElementById('id_mat_digit_5_bottom_right_y').value = Ycoord;
+                }else if (last_element_clicked === 'id_mat_digit_6_top_left_x' || last_element_clicked === 'id_mat_digit_6_top_left_y'){
+                    document.getElementById('id_mat_digit_6_top_left_x').value = Xcoord;
+                    document.getElementById('id_mat_digit_6_top_left_y').value = Ycoord;
+                }else if(last_element_clicked === 'id_mat_digit_6_bottom_right_x' || last_element_clicked === 'id_mat_digit_6_bottom_right_y'){
+                    document.getElementById('id_mat_digit_6_bottom_right_x').value = Xcoord;
+                    document.getElementById('id_mat_digit_6_bottom_right_y').value = Ycoord;
+                }else if (last_element_clicked === 'id_mat_digit_7_top_left_x' || last_element_clicked === 'id_mat_digit_7_top_left_y'){
+                    document.getElementById('id_mat_digit_7_top_left_x').value = Xcoord;
+                    document.getElementById('id_mat_digit_7_top_left_y').value = Ycoord;
+                }else if(last_element_clicked === 'id_mat_digit_7_bottom_right_x' || last_element_clicked === 'id_mat_digit_7_bottom_right_y'){
+                    document.getElementById('id_mat_digit_7_bottom_right_x').value = Xcoord;
+                    document.getElementById('id_mat_digit_7_bottom_right_y').value = Ycoord;
+                }else if (last_element_clicked === 'id_page_no_top_left_x' || last_element_clicked === 'id_page_no_top_left_y'){
+                    document.getElementById('id_page_no_top_left_x').value = Xcoord;
+                    document.getElementById('id_page_no_top_left_y').value = Ycoord;
+                }else if(last_element_clicked === 'id_page_no_bottom_right_x' || last_element_clicked === 'id_page_no_bottom_right_y'){
+                    document.getElementById('id_page_no_bottom_right_x').value = Xcoord;
+                    document.getElementById('id_page_no_bottom_right_y').value = Ycoord;
+                }
+            }
+			           
+        }    
+
         window.addEventListener("DOMContentLoaded", function(event){
-        	
 			document.getElementById('id_mat_digit_1_top_left_x').addEventListener("click", element_clicked);
 			document.getElementById('id_mat_digit_1_top_left_x').addEventListener("click", element_clicked);
 			document.getElementById('id_mat_digit_1_bottom_right_x').addEventListener("click", element_clicked);
@@ -181,9 +245,10 @@
 			document.getElementById('id_page_no_top_left_y').addEventListener("click", element_clicked);
 			document.getElementById('id_page_no_bottom_right_x').addEventListener("click", element_clicked);
 			document.getElementById('id_page_no_bottom_right_y').addEventListener("click", element_clicked);
-			// document.getElementById('form_reset').addEventListener("click", reset_form);
-			document.querySelector('#question-image').addEventListener('click' , MouseTrack);
-			// document.querySelector('#draw_rect').addEventListener('click' , draw_rect);
+            document.querySelector('#canvas').addEventListener('click' , MouseTrack);
+            document.querySelector('#canvas').addEventListener('mousedown' , record_coord);
+            document.querySelector('#canvas').addEventListener('mouseup' , fillCoord);
+            document.querySelector('#canvas').addEventListener('mousemove' , displayCoord);
 		});
 	</script>
 {% endblock %}
