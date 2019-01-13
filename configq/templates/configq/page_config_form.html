@@ -85,7 +85,12 @@
 		}
 
 		function element_clicked(e){
-			last_element_clicked = e.srcElement.id
+			last_element_clicked = e.srcElement.id;
+            if (last_element_clicked === 'id_mat_digit_1_top_left_x'){
+                window.scrollTo(1850,1500);
+            }else if(last_element_clicked === 'id_page_no_top_left_x'){
+                window.scrollTo(500,document.body.scrollHeight);
+            }
 		}
 
          /*save the current coord on mouse down event

@@ -129,6 +129,7 @@ class ansScript:
 				# print('image processed')
 		print(str(self.readFileCount) + ' files copied to cleaned dir')
 		print(str(self.unreadFileCount) + ' files couldn\'t read. copied to unread dir')
+		return (self.readFileCount, self.unreadFileCount)
 
 	def readAns(self, request):
 		"""

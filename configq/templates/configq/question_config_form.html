@@ -18,17 +18,68 @@
 			</div>		
 		</div>
 	</div>
+    <div>
+        <p id="coordinate">mouse coord</p>
+    </div>
 
-	<div class="row question-image" id="question-image">		
+	<div class="row">	
+        <canvas id="canvas" height="1754" width="1240" style="border: 1px solid #2c3e50; background-image: url(/media/{{ image_url }}); background-size: cover">
+            <!-- <img src="/media/{{ image_url }}" alt="question image" height="1754" width="1240" id="myimage">  -->
+        </canvas>	
 		<!-- <iframe src="/media/questions/1597839_1.png" height="600" width="400"></iframe> -->
-		<img src="/media/{{ image_url }}" alt="question image" height="1754" width="1240" id="myimage">	
+		<!-- <img src="/media/{{ image_url }}" alt="question image" height="1754" width="1240" id="myimage">	 -->
 	</div>	
 	
 	<script type="text/javascript">
-		var last_element_clicked
-		function element_clicked(e){
+
+        var parentX = document.getElementById('canvas').offsetLeft;
+        var parentY = document.getElementById('canvas').offsetTop;
+
+		// var last_element_clicked
+		/*function element_clicked(e){
 			last_element_clicked = e.srcElement.id
-		}
+		}*/
+
+        function record_coord(e){            
+            init_x_coord = (e.pageX-parentX);
+            init_y_coord = (e.pageY-parentY);
+            
+        }
+
+        function fillCoord(e){
+            var a, b, c, d; //four corner of each box
+            current_x = (e.pageX-parentX);
+            current_y = (e.pageY-parentY);
+            a = Math.round(init_x_coord+5);
+            b = Math.round(init_y_coord)+2;
+            c = Math.round(current_x-5);
+            d = Math.round(current_y-5);
+            document.getElementById('id_top_left_x').value = a*2;
+            document.getElementById('id_top_left_y').value = b*2;
+            document.getElementById('id_bottom_right_x').value = c*2;
+            document.getElementById('id_bottom_right_y').value = d*2;
+                console.log(a +' '+ b +' ' + c +' '+ d);
+                draw_rect(a, b, (c - a), (d-b));                 
+        }
+                
+
+        function draw_rect(x, y, width, height) {   
+            // console.log(x,y, width, height); 
+            var canvas = document.getElementById('canvas');         
+            var context = canvas.getContext('2d');         
+            context.rect(Math.round(x), Math.round(y), Math.round(width), Math.round(height));
+            context.strokeStyle = "#19b5fe";
+            context.stroke();
+            // console.log(init_x_coord*2, init_y_coord*2, current_x*2, current_y*2);
+            // console.log(digit_box_width);
+        }
+
+        function displayCoord(e){
+            x_coord = (e.pageX-parentX)*2;
+            y_coord = (e.pageY-parentY)*2;
+            document.getElementById("coordinate").innerHTML = x_coord +' '+ y_coord;
+        }
+
 		function MouseTrack(e) {   
 			parentX = document.getElementById('question-image').offsetLeft
 			parentY = document.getElementById('question-image').offsetTop
@@ -54,11 +105,14 @@
         }       
         window.addEventListener("DOMContentLoaded", function(event){
         	
-			document.getElementById('id_top_left_x').addEventListener("click", element_clicked);
+			/*document.getElementById('id_top_left_x').addEventListener("click", element_clicked);
 			document.getElementById('id_top_left_y').addEventListener("click", element_clicked);
 			document.getElementById('id_bottom_right_x').addEventListener("click", element_clicked);
 			document.getElementById('id_bottom_right_y').addEventListener("click", element_clicked);
-			document.querySelector('#question-image').addEventListener('click' , MouseTrack);
+			document.querySelector('#question-image').addEventListener('click' , MouseTrack);*/
+            document.querySelector('#canvas').addEventListener('mousedown' , record_coord);
+            document.querySelector('#canvas').addEventListener('mouseup' , fillCoord);
+            document.querySelector('#canvas').addEventListener('mousemove' , displayCoord);
 		});
 	</script>
 {% endblock %}

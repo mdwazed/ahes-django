@@ -8,6 +8,7 @@ from .forms import UploadAnsScriptForm
 
 from grader.src.preProcessAnsScript import ansScript
 from grader.src import ans_grader
+from configq.misc_function import get_exam
 
 
 # Create your views here.
@@ -32,14 +33,16 @@ def home(request):
 	# data = test.test()
 	if request.method == 'POST':
 		ansc = ansScript()
-		ansc.processAnsScript(request)
+		(readFileCount, unReadFileCount) = ansc.processAnsScript(request)
 		ansc.readAns(request)
 		ans_grader.grade_all_ans(request)
 		
 		context ={
-			'success_message':'ans script processing complete',
+            'success_message': 'image pre processing complete',
+			'readFileCount': readFileCount,
+            'unReadFileCount' : unReadFileCount,
 		}
-		return HttpResponseRedirect(reverse('grader:ans_list'))
+		# return HttpResponseRedirect(reverse('grader:ans_list'))
 	else:
 		context={
 
@@ -49,9 +52,13 @@ def home(request):
 
 def delete_ans(request):
     if request.method == 'POST':
-        StudentAns.objects.all().delete()
+        StudentAns.objects.filter(exam= get_exam(request)).delete()
         return HttpResponseRedirect(reverse('grader:ans_list'))
 
 class StudentsAnsList(ListView):
     model = StudentAns
+
+    def get_queryset(self):
+        return StudentAns.objects.filter(exam= get_exam(self.request))
+
 
