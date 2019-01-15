@@ -130,6 +130,8 @@ class PageConfig(models.Model):
 
 	def __str__(self ):
 		return 'page config id:'+str(self.upload_question)
+
+		
 # signal to create a page config object and save to db if a question image is uploaded
 @receiver(post_save, sender=UploadQuestion)
 def page_config_create(sender, instance, **kwargs):

@@ -5,23 +5,34 @@
 {% endblock %}
 
 {% block content %}
-    <div class="col-md-8">
+    <div class="col-md-10">
         <div>
             <h4> Ans List </h4>          
         </div>
         <div>
-            <ul>
-                {% for ans in object_list %}
-                    <li>
-                        {{ ans.question_num }} - {{ ans.students_ans }} - {{ans.matching_confidence}} - {{ ans.matriculation_num }}
-                        
-                    </li>
-                {% endfor %}
-                <form action="{% url 'grader:delete_ans' %}" method="POST">
-                    {% csrf_token %}
-                    <input type="submit" name="submit" value="Delete all">                    
-                </form>
-            </ul>           
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Question num</th><th>Student ans</th><th>Matriculation num</th><th>Matching confidence</th><th>Auto grade</th><th>final grade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ans in object_list %}
+                    <tr>
+                        <td>{{ ans.question_num }}</td>
+                        <td>{{ ans.students_ans }}</td>
+                        <td>{{ ans.matriculation_num }}</td>
+                        <td>{{ ans.matching_confidence }}</td>
+                    </tr>           
+                    {% endfor %}
+                </tbody>        
+            </table>
+          
+            <form action="{% url 'grader:delete_ans' %}" method="POST">
+                {% csrf_token %}
+                <input type="submit" name="submit" value="Delete all">                    
+            </form>
+                  
         </div>      
     </div>
 {% endblock %}

@@ -19,7 +19,8 @@
           <ul class="nav">
             <li class="nav-item"><a class="nav-link" href="{% url 'ahes_home' %}">Home</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'grader:home' %}">Grader Home</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Unread Image</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'grader:upload_ans_script' %}">Upload ans script</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'grader:read_ans_script' %}">Read ans script</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'grader:ans_list' %}">Ans List</a></li>            
           </ul>
         {% endblock %}

@@ -40,7 +40,7 @@ class ansScript:
 				pre, name = imageName.split('_')
 			except ValueError:
 				pre = 0
-				print('name doesn\'t contain _' )
+				print('image name doesn\'t contain _' )
 			if(pre != str(get_exam(request).id)):				
 				continue
 
@@ -71,8 +71,7 @@ class ansScript:
 				print('page number:', page_number)
 				if page_number not in range(1,20):
 					# move this page to unread image dir, delete image from raw dir and continue to next iteration
-					im.save(os.path.join(self.unreadImagePath, imageName))
-					self.unreadFileCount += 1
+					self.move_image_to_unread_image(imageName, im)
 					# to be done- delete the image from the raw dir
 
 					continue

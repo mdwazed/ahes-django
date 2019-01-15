@@ -31,14 +31,16 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'configq.apps.ConfigqConfig',
-    'grader.apps.GraderConfig',
+    # 'configq.apps.ConfigqConfig',
+    # 'grader.apps.GraderConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'configq',
+    'grader',
 ]
 
 MIDDLEWARE = [

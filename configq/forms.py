@@ -2,11 +2,11 @@ from django import forms
 from .models import Semester, CourseName, Exam, UploadQuestion, PageConfig, Question
 from django.core.exceptions import ValidationError
 
-FRUIT_CHOICES=[
-	('orange','Orange'),
-	('apple', 'Apple'),
-	('banana', 'Banana')
-]
+# FRUIT_CHOICES=[
+# 	('orange','Orange'),
+# 	('apple', 'Apple'),
+# 	('banana', 'Banana')
+# ]
 
 
 # def get_exam_choices():
@@ -67,10 +67,10 @@ class EditQuestionForm(forms.ModelForm):
 		exclude = ['exam']
 	
 
-class NameForm(forms.Form):
-	your_name = forms.CharField(max_length=100)
-	your_age = forms.IntegerField()
-	favorite_friuts = forms.CharField(max_length=20, widget=forms.Select(choices=FRUIT_CHOICES))
+# class NameForm(forms.Form):
+# 	your_name = forms.CharField(max_length=100)
+# 	your_age = forms.IntegerField()
+# 	favorite_friuts = forms.CharField(max_length=20, widget=forms.Select(choices=FRUIT_CHOICES))
 
 class UploadForm(forms.Form):
 	file = forms.FileField()

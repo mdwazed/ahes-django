@@ -2,6 +2,7 @@
 from django.shortcuts import render, reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import ListView, FormView
+from django.core.files.storage import FileSystemStorage
 
 from .models import StudentAns
 from .forms import UploadAnsScriptForm
@@ -13,24 +14,33 @@ from configq.misc_function import get_exam
 
 # Create your views here.
 
-class UplaodAnsScriptView(FormView):
-    form_class = UploadAnsScriptForm
-    template_name = 'upload_ans_script.html'
-    # success_url = reverse('grader:ans_list')  # Replace with your URL or reverse().
-
-    def post(self, request, *args, **kwargs):
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-        files = request.FILES.getlist('file_field')
-        if form.is_valid():
-            for f in files:
-                ...  # Do something with each file.
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
 
 def home(request):
-	# data = test.test()
+	context={}    
+	return render(request, 'grader/grader_home.html', context)
+
+def upload(request):
+	upload_file_count = 0
+	if request.method == "POST":
+		myfiles = request.FILES.getlist('myfile')
+		# print(myfiles)
+		exam = get_exam(request)
+		for file in myfiles:
+			fs = FileSystemStorage()
+			fs.save('raw_image/'+ str(exam.id) +'_'+file.name, file)
+			upload_file_count +=1
+		context = {
+		'upload_file_count' : upload_file_count
+		}
+		return render(request, 'grader/upload_ans_script.html', context)
+	else:
+		context = {
+
+		}
+		return render(request, 'grader/upload_ans_script.html', context)
+
+
+def read_ans_script(request):
 	if request.method == 'POST':
 		ansc = ansScript()
 		(readFileCount, unReadFileCount) = ansc.processAnsScript(request)
@@ -38,27 +48,27 @@ def home(request):
 		ans_grader.grade_all_ans(request)
 		
 		context ={
-            'success_message': 'image pre processing complete',
+			'success_message': 'image pre processing complete',
 			'readFileCount': readFileCount,
-            'unReadFileCount' : unReadFileCount,
+			'unReadFileCount' : unReadFileCount,
 		}
-		# return HttpResponseRedirect(reverse('grader:ans_list'))
 	else:
 		context={
 
 		}
 	
-	return render(request, 'grader/grader_home.html', context)
+	return render(request, 'grader/read_ans_script.html', context)
 
 def delete_ans(request):
-    if request.method == 'POST':
-        StudentAns.objects.filter(exam= get_exam(request)).delete()
-        return HttpResponseRedirect(reverse('grader:ans_list'))
+	if request.method == 'POST':
+		StudentAns.objects.filter(exam= get_exam(request)).delete()
+		return HttpResponseRedirect(reverse('grader:ans_list'))
 
 class StudentsAnsList(ListView):
-    model = StudentAns
+	model = StudentAns
+	paginated_by = 10
 
-    def get_queryset(self):
-        return StudentAns.objects.filter(exam= get_exam(self.request))
+	def get_queryset(self):
+		return StudentAns.objects.filter(exam= get_exam(self.request))
 
 

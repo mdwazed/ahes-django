@@ -8,20 +8,6 @@
 	<div class="col-md-8">
 		<div>
 			<h4> Grader Home </h4>
-			{% if success_message %}
-				<p>{{ success_message }}</p>
-				<p> {{ readFileCount }} file/s read successfully</p>
-				<p>{{ unReadFileCount }} file/s couldn't read</p>
-				<p><a href="#">CLICK HERE </a>to manually process the unread images</p>
-			{% endif %}
 		</div>
-		<div>
-			{% if not success_message %}
-			<form action="{% url 'grader:home' %}" method="POST">
-				{% csrf_token %}
-				<input type="submit" name="submit" value="process images">
-			</form>
-			{% endif %}
-		</div>		
 	</div>
 {% endblock %}

@@ -7,15 +7,18 @@
 {% block content %}
     <div class="col-md-8">
         <div>
-            <h4> upload ans script </h4>          
+            <h4> Upload answer scripts </h4>          
         </div>
         <div>
+            {% if upload_file_count %}
+            <p>{{ upload_file_count }} files has been uploaded</p>
+            {% endif %}
            
-                <form action="{% url 'grader:upload_ans_script' %}" method="POST">
-                    {% csrf_token %}
-                    {{ form }}
-                    <input type="submit" name="submit" value="Delete all">                    
-                </form>
+        <form action="{% url 'grader:upload_ans_script' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" name="myfile" multiple>
+            <button type="submit">Upload</button>
+        </form>
                  
         </div>      
     </div>

@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from . import misc_function
 from .models import Exam, Question, UploadQuestion, PageConfig
 from .forms import (
-	NameForm, ExamConfigForm, QuestionConfigForm, QuestionImageUploadForm, 
+	ExamConfigForm, QuestionConfigForm, QuestionImageUploadForm, 
 	UploadForm, PreQuestionConfigForm, SelectExamForm, PageConfigForm, EditQuestionForm
 	)
 
