@@ -20,6 +20,10 @@ def home(request):
 	return render(request, 'grader/grader_home.html', context)
 
 def upload(request):
+	"""
+	upload all scanned image to resized folder from where all further processing will be done.
+
+	"""
 	upload_file_count = 0
 	if request.method == "POST":
 		myfiles = request.FILES.getlist('myfile')

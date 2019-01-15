@@ -27,7 +27,7 @@ class ansScript:
 		self.unreadFileCount = 0
 		self.candidates = readConfig.getCandidatesmat_number()
 		self.rawPath = os.path.join(settings.BASE_DIR, 'media/raw_image')
-		self.resizedPath = os.path.join(settings.BASE_DIR, 'media/cleaned_image')
+		self.cleanedPath = os.path.join(settings.BASE_DIR, 'media/cleaned_image')
 		self.unreadImagePath = os.path.join(settings.BASE_DIR, 'media/unread_image')
 
 	# read all ans script, process and save 
@@ -123,7 +123,7 @@ class ansScript:
 				# imName, imExt = imageName.split('.')
 				# if(imExt.lower() == 'png' or 'jpg'):
 				# 	newFileName = exam_id+'_'+mat_number + '_' + str(page_number) + '.' + imExt
-				# 	im.save(os.path.join(self.resizedPath, newFileName))
+				# 	im.save(os.path.join(self.cleanedPath, newFileName))
 				# 	self.readFileCount += 1		
 				# print('image processed')
 		print(str(self.readFileCount) + ' files copied to cleaned dir')
@@ -145,12 +145,12 @@ class ansScript:
 		# print(questions_loc)
 		# questionsLoc = readConfig.getQuestionsLoc()
 		# questionLoc=== [['question_no', 'page_no', 'leftx', 'left top', right x, 'right top'],[]]
-		cleanImages = os.listdir(self.resizedPath)
+		cleanImages = os.listdir(self.cleanedPath)
 		for image in cleanImages:
 			exam_id, mat_number, page_number = image.split('_')
 			page_number, ext = page_number.split('.')
-			# imageName = os.path.join(self.resizedPath, image)
-			im = Image.open(os.path.join(self.resizedPath, image))
+			# imageName = os.path.join(self.cleanedPath, image)
+			im = Image.open(os.path.join(self.cleanedPath, image))
 			for question in questions_loc:
 				# print('page num'+page_number)
 				# print('page num'+str(question[1]))
@@ -185,11 +185,18 @@ class ansScript:
 		imName, imExt = imageName.split('.')
 		if(imExt.lower() == 'png' or 'jpg'):
 			newFileName = str(exam_id)+'_'+ mat_number + '_' + str(page_number) + '.' + imExt
-			im.save(os.path.join(self.resizedPath, newFileName))
+			im.save(os.path.join(self.cleanedPath, newFileName))
+			#delete image from the raw_image folder
+			os.remove(os.path.join(self.rawPath, imageName))
 			self.readFileCount += 1
+		else:
+			print('image must be png or jpg.')
+			self.move_image_to_unread_image(imageName, im)
 
 	def move_image_to_unread_image(self, imageName, im):
 		im.save(os.path.join(self.unreadImagePath, imageName))
+		#delete image from the raw_image folder
+		os.remove(os.path.join(self.rawPath, imageName))
 		self.unreadFileCount += 1
             
 if __name__ == "__main__":
