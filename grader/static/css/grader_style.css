@@ -5,6 +5,14 @@
 	margin:5px;
 }*/
 
+.table {
+    /*background-color: red;*/
+}
+
 .sub-heading{
 	margin-top: 30px
+}
+
+.small-info-div {
+    margin: 20px 20px;
 }

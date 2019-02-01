@@ -8,21 +8,36 @@
     <div class="col-md-10">
         <div>
             <h4> Ans List </h4>          
-        </div>
-        <div>
-            <table class="table">
+       
+            <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>Question num</th><th>Student ans</th><th>Matriculation num</th><th>Matching confidence</th><th>Auto grade</th><th>final grade</th>
+                        <th>
+                            Question num 
+                            <a href="{% url 'grader:ans_list_ordered' 'question_num' %}"><i class="fas fa-angle-double-down"></i></a>
+                            
+                        </th>
+                        <th>Student ans</th>
+                        <th>
+                            Matriculation num
+                            <a href="{% url 'grader:ans_list_ordered' 'matriculation_num' %}"><i class="fas fa-angle-double-down"></i></a>
+                        </th>
+                        <th>Matching confidence</th>
+                        <th>Auto grade</th>
+                        <th>final grade</th>
                     </tr>
                 </thead>
                 <tbody>
+
                     {% for ans in object_list %}
                     <tr>
                         <td>{{ ans.question_num }}</td>
                         <td>{{ ans.students_ans }}</td>
                         <td>{{ ans.matriculation_num }}</td>
                         <td>{{ ans.matching_confidence }}</td>
+                        <td>{{ ans.pk }}</td>
+                        <td></td>
+                        <td><a href="{% url 'grader:ans_details' ans.pk %}">Details</a></td>
                     </tr>           
                     {% endfor %}
                 </tbody>        
@@ -32,6 +47,8 @@
                 {% csrf_token %}
                 <input type="submit" name="submit" value="Delete all">                    
             </form>
+
+
                   
         </div>      
     </div>
