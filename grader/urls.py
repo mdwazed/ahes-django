@@ -14,4 +14,5 @@ urlpatterns = [
     path('read_ans_script', views.read_ans_script, name='read_ans_script'),
     path('ans_details/<int:pk>', views.ans_details, name='ans_details'),
     path('ans_details/', views.ans_details, name='ans_details'),
+    path('evaluate_ans_scripts/', views.evaluate_ans_scripts, name='evaluate_ans_scripts'),
 ]

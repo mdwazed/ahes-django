@@ -13,6 +13,8 @@ from grader.src import ans_grader
 from configq.misc_function import get_exam
 from configq.models import Question
 
+import random
+
 import cv2 as cv
 import base64
 import numpy as np
@@ -57,7 +59,7 @@ def read_ans_script(request):
 		ansc = ansScript()
 		(readFileCount, unReadFileCount) = ansc.processAnsScript(request)
 		ansc.readAns(request)
-		ans_grader.grade_all_ans(request)
+		
 		
 		context ={
 			'success_message': 'image pre processing complete',
@@ -71,6 +73,14 @@ def read_ans_script(request):
 	
 	return render(request, 'grader/read_ans_script.html', context)
 
+def evaluate_ans_scripts(request):
+	"""
+	evaluate all students ans on database against official ans
+	auto grade the ans based on threshold and alloted marks  
+	"""
+	if request.method == 'POST':
+		ans_grader.grade_all_ans(request)
+		return HttpResponseRedirect(reverse('grader:ans_list'))
 def delete_ans(request):
 	"""
 	delete all ans fro the currently selected exam
@@ -85,8 +95,8 @@ class StudentsAnsList(ListView):
 	def get_queryset(self):
 		order = self.kwargs.get('order', None)
 		if order:
-			return StudentAns.objects.filter(exam= get_exam(self.request)).order_by(order)
-		return StudentAns.objects.filter(exam= get_exam(self.request))
+			return StudentAns.objects.filter(exam= get_exam(self.request)).order_by(order, 'matching_confidence')
+		return StudentAns.objects.filter(exam= get_exam(self.request)).order_by('question_num')
 
 
 def ans_details(request, pk=None):
@@ -94,6 +104,26 @@ def ans_details(request, pk=None):
 	renders details of an ans with original written subimage
 	"""
 	exam = get_exam(request)
+	# posted from the ans_details page by clicking the next button
+	# check which radio button was selected and set the pk according to that 
+	if request.method == 'POST':
+		all_ans = StudentAns.objects.filter(exam=exam)
+		option = request.POST['next_choice']
+		if (option == 'random'):
+			pass
+		elif(option == 'student'):
+			pass
+		else:
+			id = request.POST['pk']
+			current_ans = all_ans.get(pk=id)
+			# get a random pk of another ans with same question id 
+			same_anss = all_ans.filter(exam=exam, question_num=current_ans.question_num)
+			# print(same_anss)
+			random_ans = random.choice(same_anss)
+			pk = random_ans.pk
+
+			
+
 	if pk:
 		student_ans = StudentAns.objects.get(pk=pk)
 	else:

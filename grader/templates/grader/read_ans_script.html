@@ -17,11 +17,26 @@
         </div>
         <div>
             {% if not success_message %}
+            <h5>
+                Clicking below button will read all the uploaded image and scan through the each ans written by the students and save them in the storage.
+            </h5>
             <form action="{% url 'grader:read_ans_script' %}" method="POST">
                 {% csrf_token %}
                 <input type="submit" name="submit" value="Read Ans">
             </form>
             {% endif %}
-        </div>      
+        </div>  
+        <hr>  
+        <div>
+            <h5>
+                Satisfied with ans reading?? Go for evaluation and grading.
+                Clicking below button will evaluate all the read ans and auto grade them.
+                Ofcoure you can change the grading as you wish later.
+            </h5>
+            <form action="{% url 'grader:evaluate_ans_scripts' %}" method="POST">
+                {% csrf_token %}
+                <input type="submit" name="submit" value="Evaluate">
+            </form>
+        </div>  
     </div>
 {% endblock %}

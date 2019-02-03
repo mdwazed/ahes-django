@@ -39,13 +39,13 @@
 		/*function element_clicked(e){
 			last_element_clicked = e.srcElement.id
 		}*/
-
+        // record initial coord on mouse down in order to draw rect on mouse up event
         function record_coord(e){            
             init_x_coord = (e.pageX-parentX);
             init_y_coord = (e.pageY-parentY);
             
         }
-
+        // prepare four corners of rect on mouse up. actual rect is drawn by draw_rect function
         function fillCoord(e){
             var a, b, c, d; //four corner of each box
             current_x = (e.pageX-parentX);

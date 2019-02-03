@@ -42,7 +42,9 @@ class Question(models.Model):
 	"""
 	exam = models.ForeignKey('Exam', on_delete=models.CASCADE)
 	page = models.SmallIntegerField()
-	question_number = models.CharField(max_length=5)	
+	question_number = models.CharField(max_length=5)
+	allotedMarks = models.SmallIntegerField()
+	threshold = models.DecimalField(max_digits=3, decimal_places=2)
 	topLeftX = models.SmallIntegerField()
 	topLeftY = models.SmallIntegerField()
 	bottomRightX = models.SmallIntegerField()

@@ -51,6 +51,8 @@ class PreQuestionConfigForm(forms.Form):
 	
 class QuestionConfigForm(forms.Form):
 	question_number = forms.CharField(max_length=5,)
+	allotedMarks = forms.IntegerField()
+	threshold = forms.DecimalField()
 	top_left_x = forms.IntegerField()
 	top_left_y = forms.IntegerField()
 	bottom_right_x = forms.IntegerField()

@@ -13,22 +13,22 @@
             <h5>Matriculation number: {{ student_ans.matriculation_num }},  Question number:  {{student_ans.question_num}}</h5>
            
             <hr>
-            <h5>Question:</h5>            
+            <h5>Question :</h5>            
             <div>
                 <p>{{ question.questionText }}</p>
             </div>
             <hr>
-            <h5>Official answer</h5>
+            <h5>Official answer :</h5>
             <div>
                 <p>{{ question.questionAns }}</p>
             </div>
             <hr>
-            <h5>As written by the student</h5>
+            <h5>As written by the student :</h5>
             <div class="sub-image">
                 <img src="data:image/png;base64, {{img}}" alt="ans_image" width="100%" >
             </div>
             <hr>
-            <h5>As read by the system</h5>
+            <h5>As read by the system :</h5>
             <div>
                 <p>{{ student_ans.students_ans }}</p>
             </div>
@@ -38,25 +38,30 @@
                     <h5>Matching confidence: {{ student_ans.matching_confidence }}</h5>                    
                 </div>
                 <div class="small-info-div">
-                    <h5>Threshold: 0.6</h5>
+                    <h5><a href="">Threshold: {{ question.threshold }}</a></h5>
                 </div>
                 <div class="small-info-div">
-                    <h5>Auto grade: 4 out of 5</h5>
+                    <h5>Auto grade: {{ student_ans.auto_grade }} out of {{question.allotedMarks}}</h5>
                 </div>
                 <div class="small-info-div">
-                    <h5>Final grade: 4 </h5>
+                    <h5>Final grade: 0 </h5>
                 </div>                
             </div>
             <hr>
             <div style="display: flex;">
-                <div class="small-info-div">
-                    <label class="radio-inline"><input type="radio" name="optradio" checked>Random</label>
-                    <label class="radio-inline"><input type="radio" name="optradio">This student</label>
-                    <label class="radio-inline"><input type="radio" name="optradio">This question</label>
-                </div>
-                <div class="small-info-div">
-                    <button type="button" class="btn btn-primary">Next</button>
-                </div>
+                <form action="{% url 'grader:ans_details' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="small-info-div">
+                        <label class="radio-inline"><input type="radio" name="next_choice" value="random">Random</label>
+                        <label class="radio-inline"><input type="radio" name="next_choice" value="student">This student</label>
+                        <label class="radio-inline"><input type="radio" name="next_choice" value="question" checked>This question</label>
+                    </div>
+                    <div class="small-info-div">
+                        <input type="hidden" name="pk" value="{{ student_ans.pk }}">
+                        <button type="submit" class="btn btn-primary">Next</button>
+                    </div>
+                    
+                </form>
             </div>
             <hr>
         </div>      

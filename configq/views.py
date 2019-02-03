@@ -173,9 +173,11 @@ def question_config(request):
 		if form.is_valid():
 			# print(form.cleaned_data)
 			question_number = form.cleaned_data.get("question_number")
+			allotedMarks = form.cleaned_data.get("allotedMarks")
+			threshold = form.cleaned_data.get("threshold")
 			topLeftX = form.cleaned_data.get("top_left_x")
 			topLeftY = form.cleaned_data.get("top_left_y")
-			bottomRightX = form.cleaned_data.get("bottom_right_y")
+			bottomRightX = form.cleaned_data.get("bottom_right_x")
 			bottomRightY = form.cleaned_data.get("bottom_right_y")
 			exam = exam
 			page = page_number
@@ -190,7 +192,9 @@ def question_config(request):
 					exam = exam,
 					page = page,
 					questionText= questionText,
-					questionAns = questionAns
+					questionAns = questionAns,
+					allotedMarks = allotedMarks,
+					threshold = threshold,
 				)
 			# print(exam)
 			questionObj.save()

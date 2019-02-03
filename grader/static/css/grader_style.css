@@ -16,3 +16,25 @@
 .small-info-div {
     margin: 20px 20px;
 }
+
+.search-box {
+    width: 100%;
+    /*border: 1px solid red;*/
+    display: inline-flex;
+    justify-content: flex-end;
+    /*flex-flow: row nowrap;*/
+}
+
+.search-box div {
+    align-self: flex-end;
+    margin: 10px 10px;
+    display: inline-flex;
+}
+
+.search-box .form-control {
+    display: inline;
+}
+.search-box input {
+    margin-left: 10px;
+}
+

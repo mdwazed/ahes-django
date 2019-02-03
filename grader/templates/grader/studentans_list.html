@@ -7,7 +7,21 @@
 {% block content %}
     <div class="col-md-10">
         <div>
-            <h4> Ans List </h4>          
+            <div><h4> Ans List </h4> </div>
+            <div class="search-box">  
+                <form action="{% url 'grader:ans_list' %}" method="POST">
+                    {% csrf_token %}              
+                    <div><p>Question nr.</p><input class="form-control" type="text" placeholder="Question num" aria-label="Search"></div>
+                    <div><p>Matriculation nr.</p><input class="form-control" type="text" placeholder="Matriculation num" aria-label="Search"></div>
+                    <div>
+                        <input type="button" name="search" value="Search">  
+                    </div>                  
+                </form>
+            </div>
+                
+                          
+            </div>
+
        
             <table class="table table-hover">
                 <thead>
@@ -25,6 +39,7 @@
                         <th>Matching confidence</th>
                         <th>Auto grade</th>
                         <th>final grade</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -35,8 +50,8 @@
                         <td>{{ ans.students_ans }}</td>
                         <td>{{ ans.matriculation_num }}</td>
                         <td>{{ ans.matching_confidence }}</td>
-                        <td>{{ ans.pk }}</td>
-                        <td></td>
+                        <td>{{ ans.auto_grade }}</td>
+                        <td>{{ ans.final_grade }}</td>
                         <td><a href="{% url 'grader:ans_details' ans.pk %}">Details</a></td>
                     </tr>           
                     {% endfor %}
