@@ -1,22 +1,33 @@
 {% extends 'grader_base_template.html' %}
 
 {% block title %}
-    <title>Home</title>
+    AHES | Ans List
 {% endblock %}
 
 {% block content %}
-    <div class="col-md-10">
+    <div>
         <div>
-            <div><h4> Ans List </h4> </div>
-            <div class="search-box">  
-                <form action="{% url 'grader:ans_list' %}" method="POST">
-                    {% csrf_token %}              
-                    <div><p>Question nr.</p><input class="form-control" type="text" placeholder="Question num" aria-label="Search"></div>
-                    <div><p>Matriculation nr.</p><input class="form-control" type="text" placeholder="Matriculation num" aria-label="Search"></div>
-                    <div>
-                        <input type="button" name="search" value="Search">  
-                    </div>                  
-                </form>
+            <h4 class="para-heading"> Ans List </h4>
+            <div>  
+                <div>
+                    <form class="form-inline" action="{% url 'grader:ans_list' %}" method="POST">
+                      <div class="form-group">
+                        <label for="ques_nr">Ques Nr.</label>
+                        <input type="email" class="form-control" id="ques_nr">
+                      </div>
+                      <div class="form-group">
+                        <label for="mat_nr">Mat. Nr.</label>
+                        <input type="email" class="form-control" id="mat_nr">
+                      </div>
+                      <div><button class="btn btn-primary" name="search" value="Search">Search</button></div>
+                    </form>
+                </div>
+               <!--  <form action="{% url 'grader:ans_list' %}" method="POST">
+                   {% csrf_token %}              
+                   Question nr.<input class="form-control" type="text" placeholder="Question num" aria-label="Search">
+                   Matriculation nr.<input class="form-control" type="text" placeholder="Matriculation num" aria-label="Search">
+                   <input type="button" name="search" value="Search">  
+               </form> -->
             </div>
                 
                           

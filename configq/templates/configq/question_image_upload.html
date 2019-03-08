@@ -1,12 +1,12 @@
 {% extends 'configq_base_template.html' %}
 
 {% block title %}
-	<title>Question image upload</title>
+	AHES | Question upload
 {% endblock %}
 
 {% block content %}
-	<div class="col-md-8">
-		<h4> Question image upload </h4>
+	<div>
+		<h4 class="para-heading"> Question image upload </h4>
 		{% if exam %}
 			<p>Uploading image for: {{  exam }}</p>
 		{% endif %}
@@ -21,7 +21,7 @@
 		</form>
 				
 	</div>
-	<div class="col-md-8">
+	<div>
 		<h4 class="sub-heading">List of images already uploaded</h4>
 		<table class="table">
 		<thead>

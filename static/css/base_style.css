@@ -1,0 +1,71 @@
+/*Common style for both app goes here*/
+
+.container {
+    /*border: 2px solid black;*/
+    display: flex;
+    flex-direction: column;
+}
+
+.inner-container {
+    display: flex;
+}
+.sidebar {
+    flex: 1;
+}
+.page-content {
+    flex: 5;
+    display: flex;
+    flex-direction: column;
+    margin-left: 1%;
+}
+
+.top-banner {
+    margin-top: 10px;
+    background-color: #ffdbce;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.top-banner h2 {
+    /*align-self: stretch;*/
+    
+}
+
+.top-content {
+    color: #ff875e;
+}
+
+.para-heading {
+    color: #ff875e;
+}
+
+.table {
+    /*background-color: red;*/
+}
+
+.sub-heading{
+    margin-top: 30px;
+    color: #ff875e;
+}
+
+.small-info-div {
+    margin: 20px 20px;
+}
+
+
+
+.nav {
+    background-color: #f5f5fa;
+}
+
+
+.nav li:hover {
+    background-color: #e1e2f0;
+}
+
+.sub-image {
+    border: 1px solid #ff875e;
+}
+

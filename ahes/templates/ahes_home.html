@@ -1,18 +1,22 @@
 {% extends 'ahes_base_template.html' %}
 
 {% block title %}
-	<title>Home</title>
+	AHES | Home
 {% endblock %}
 
 {% block top-content %}
 	<div class="col-md-8">
-		<h4> Ahes Home </h4>
+		<h4> Home </h4>
 	</div>
 {% endblock %}
 
 {% block content %}
 	<div>
-		<h4> Read me </h4>
-		<p>Please read these instruction carefully before using this tool</p>
+		<h5 class="para-heading"> Please read this instruction very carefully before using this system </h5>
+		<p>Automatic handling of exam script (AHES) is divided in 2 module namely config and grader. Config module is responsible for uploading the reference question image, allocating space for questions and provide actual answer of each question. Grader module is responsible for the grading the students ansewer and prepare the final result.</p>
+        <h6 class="para-heading">Config</h6>
+        <p>The very first thing to do in config module is select/add an exam to work with. To select/add an exam go to exam config page. If the exam has been added to the system earlier the select the exam from the drop down menu. If not add the intended exam form the "Add new exam menu". If an exam is already selected from the previous session it will show on the top of the page. In this case go to the "upload question image" page for further configuration.</p>
+        <h6 class="para-heading">Grader</h6>
+        <p>Grader module is responsible for grading the students answer. In this module it is required to upload all the image of the students answer script which needs to be graded. Go to the "Upload ans script" page and upload all the answer script images in bulk. Once the images are uploaded go the "Read ans script" page. Functioning of this is divided into two part read the students answer and evaluate them. Clicking on the "Read ans" button will read all the students answer from images ans sotre in internal database. It may take sometimes depending on the participated number of students in the exam. Once all the images are read clicking the "Evaluate" button will evaluate the answer and grade them accordingly. All graded answer can be seen and further evaluated from the ans list page. </p>
 	</div>
 {% endblock %}

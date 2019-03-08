@@ -1,15 +1,16 @@
 {% extends 'configq_base_template.html' %}
 {% block title %}
-	<title>exam config</title>
+	AHES | exam config
 {% endblock %}
 
 
 {% block content %}
-	<div class="col-md-8">
-		<h4>Exam Config</h4>
-		<div class="col-md-8">
+	<div>
+		<h4 class="para-heading">Exam Config</h4>
+		<div>
 			{% if exam %}
-				<p>Current selected exam:  {{ exam }} </p>
+				<h5>Current selected Exam</h5>
+				<p>{{ exam }} <br> Professor: {{ exam.professor }} <br> Exam code: {{ exam.exam_code }}</p>
 			{% endif %}
 			<h4>Select an Exam</h4>
 			<!-- select exam to work on by setting in session var -->

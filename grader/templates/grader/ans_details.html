@@ -1,34 +1,34 @@
 {% extends 'grader_base_template.html' %}
 
 {% block title %}
-    <title>Home</title>
+    AHES | Detail Ans
 {% endblock %}
 
 {% block content %}
-    <div class="col-md-10">
+    <div>
         <div>
-            <h4> Answer Details </h4>          
+            <h4 class="para-heading"> Answer Details </h4>          
        
          
-            <h5>Matriculation number: {{ student_ans.matriculation_num }},  Question number:  {{student_ans.question_num}}</h5>
+            <h6>Matriculation number: {{ student_ans.matriculation_num }},  Question number:  {{student_ans.question_num}}</h6>
            
             <hr>
-            <h5>Question :</h5>            
+            <h5 class="para-heading">Question :</h5>            
             <div>
                 <p>{{ question.questionText }}</p>
             </div>
             <hr>
-            <h5>Official answer :</h5>
+            <h5 class="para-heading">Official answer :</h5>
             <div>
                 <p>{{ question.questionAns }}</p>
             </div>
             <hr>
-            <h5>As written by the student :</h5>
+            <h5 class="para-heading">As written by the student :</h5>
             <div class="sub-image">
                 <img src="data:image/png;base64, {{img}}" alt="ans_image" width="100%" >
             </div>
             <hr>
-            <h5>As read by the system :</h5>
+            <h5 class="para-heading">As read by the system :</h5>
             <div>
                 <p>{{ student_ans.students_ans }}</p>
             </div>
@@ -38,7 +38,7 @@
                     <h5>Matching confidence: {{ student_ans.matching_confidence }}</h5>                    
                 </div>
                 <div class="small-info-div">
-                    <h5><a href="">Threshold: {{ question.threshold }}</a></h5>
+                    <h5><a href="#">Threshold: {{ question.threshold }}</a></h5>
                 </div>
                 <div class="small-info-div">
                     <h5>Auto grade: {{ student_ans.auto_grade }} out of {{question.allotedMarks}}</h5>

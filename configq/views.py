@@ -52,9 +52,11 @@ def exam_config(request):
 		else:
 			return render(request, 'configq/exam_config_form.html', {'form': form})
 	else:
+		exam = misc_function.get_exam(request)
 		form = ExamConfigForm()
 		form2 = SelectExamForm()
 		context = {
+		'exam' : exam,
 		'form': form,
 		'form2': form2,
 		# 'exam': Exam.objects.get(pk=request.session['exam']),

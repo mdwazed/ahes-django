@@ -1,13 +1,13 @@
 {% extends 'grader_base_template.html' %}
 
 {% block title %}
-    <title>Read ans script</title>
+    AHES | Read ans
 {% endblock %}
 
 {% block content %}
-    <div class="col-md-8">
+    <div>
         <div>
-            <h4> Answer script reader </h4>
+            <h4 class="para-heading"> Answer script reader </h4>
             {% if success_message %}
                 <p>{{ success_message }}</p>
                 <p> {{ readFileCount }} file/s read successfully</p>
