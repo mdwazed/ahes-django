@@ -40,3 +40,5 @@ def set_all_page_config(request, current_page):
 		p = current_page
 		p.upload_question = page.upload_question
 		p.save()	
+
+

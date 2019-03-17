@@ -26,6 +26,18 @@ class Exam(models.Model):
 	credit_point = models.CharField(max_length=2)
 	professor = models.CharField(max_length=100, null=True)
 	exam_code = models.CharField(max_length=20, null=True, blank=True)
+	grade_5_0 = models.DecimalField(max_digits= 4, decimal_places=3, default=0.000)
+	grade_4_0 = models.DecimalField(max_digits= 4, decimal_places=3, default=0.000)
+	grade_3_7 = models.DecimalField(max_digits= 4, decimal_places=3, default=0.000)
+	grade_3_3 = models.DecimalField(max_digits= 4, decimal_places=3, default=0.000)
+	grade_3_0 = models.DecimalField(max_digits= 4, decimal_places=3, default=0.000)
+	grade_2_7 = models.DecimalField(max_digits= 4, decimal_places=3, default=0.000)
+	grade_2_3 = models.DecimalField(max_digits= 4, decimal_places=3, default=0.000)
+	grade_2_0 = models.DecimalField(max_digits= 4, decimal_places=3, default=0.000)
+	grade_1_7 = models.DecimalField(max_digits= 4, decimal_places=3, default=0.000)
+	grade_1_3 = models.DecimalField(max_digits= 4, decimal_places=3, default=0.000)
+	grade_1_0 = models.DecimalField(max_digits= 4, decimal_places=3, default=0.000)
+
 
 	class Meta:
 		unique_together = ('course_name', 'semester')

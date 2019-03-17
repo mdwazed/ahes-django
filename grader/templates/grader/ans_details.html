@@ -35,21 +35,30 @@
             <hr>
             <div style="display: flex;">
                 <div class="small-info-div">
-                    <h5>Matching confidence: {{ student_ans.matching_confidence }}</h5>                    
+                    <h5>Matching confidence<br>{{ student_ans.matching_confidence }}</h5>                    
                 </div>
                 <div class="small-info-div">
-                    <h5><a href="#">Threshold: {{ question.threshold }}</a></h5>
+                    <h5>Threshold <button type="button" class="btn btn-link" id="btn-th-change">Change</button><br>{{ question.threshold }}</h5>
+                    <div class="edit-th">
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="text" class="form-control-sm col-4" id="text-new-th">
+                            <input type="hidden" value="{{question.pk}}" id="question-id">
+                            <button class="btn btn-primary btn-sm" id="th-save">Save</button>
+                        </form>
+                    </div>
+                    
                 </div>
                 <div class="small-info-div">
-                    <h5>Auto grade: {{ student_ans.auto_grade }} out of {{question.allotedMarks}}</h5>
+                    <h5>Auto grade<br> {{ student_ans.auto_grade }}</h5>
                 </div>
                 <div class="small-info-div">
-                    <h5>Final grade: 0 </h5>
+                    <h5>Final grade<br> 0 </h5>
                 </div>                
             </div>
             <hr>
             <div style="display: flex;">
-                <form action="{% url 'grader:ans_details' %}" method="POST">
+                <form action="{% url 'grader:ans_details' %}" method="POST" id="form-ans-details">
                     {% csrf_token %}
                     <div class="small-info-div">
                         <label class="radio-inline"><input type="radio" name="next_choice" value="random">Random</label>
@@ -66,4 +75,38 @@
             <hr>
         </div>      
     </div>
+{% endblock %}
+
+{% block javascript%}
+<script>
+$(document).ready(function(){
+    $(".edit-th").hide();
+    $("#btn-th-change").click(function(){
+        console.log("change btn clicked");
+        $(".edit-th").toggle(500);
+    });
+    $("#th-save").click(function(){
+        event.preventDefault();
+        var question_id = $("#question-id").val();
+        var new_th = $("#text-new-th").val();
+        console.log(question_id);
+        $.post("/grader/change_threshold/", 
+            {
+                question_id : question_id,
+                new_th : new_th,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            function(data, status){
+                alert(data)
+                $("#form-ans-details").submit();
+            }
+            );
+
+        // location.reload();
+    });
+});
+
+
+
+</script>
 {% endblock %}

@@ -15,7 +15,10 @@ def home(request):
 	"""
 	home page of the configq app. contain links for other configurations
 	"""
-	context = {}
+	exam = misc_function.get_exam(request)
+	context = {
+	'exam': exam,
+	}
 	return render(request, 'configq/config_home.html', context)
 
 def select_exam(request):

@@ -11,13 +11,14 @@
             <div>  
                 <div>
                     <form class="form-inline" action="{% url 'grader:ans_list' %}" method="POST">
+                        {% csrf_token %}
                       <div class="form-group">
                         <label for="ques_nr">Ques Nr.</label>
-                        <input type="email" class="form-control" id="ques_nr">
+                        <input type="text" class="form-control" id="ques_nr" name="ques_nr">
                       </div>
                       <div class="form-group">
                         <label for="mat_nr">Mat. Nr.</label>
-                        <input type="email" class="form-control" id="mat_nr">
+                        <input type="text" class="form-control" id="mat_nr" name="mat_nr">
                       </div>
                       <div><button class="btn btn-primary" name="search" value="Search">Search</button></div>
                     </form>

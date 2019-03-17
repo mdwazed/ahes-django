@@ -3,22 +3,26 @@ read all student ans from database of the current requested exam
 clean and stem them with the help of stemm.py
 compare them  
 """
-from grader.src.stem import Stemmer
-from configq.misc_function import get_exam
-from grader.models import StudentAns
 from configq.models import Question
+from configq.misc_function import get_exam
+from grader.src.stem import Stemmer
+from grader.models import StudentAns
 
-
-
-def grade_all_ans(request):
+def grade_all_ans(request, tobe_grade_question=None):
     stemmer = Stemmer()
     current_exam = get_exam(request)
-    # print(current_exam)
-    questions = Question.objects.filter(exam = current_exam)
+    print(tobe_grade_question.question_number)
+    if not tobe_grade_question:
+        questions = Question.objects.filter(exam = current_exam)
+    else:
+        questions = Question.objects.filter(exam=current_exam, question_number=tobe_grade_question.question_number)
     # create list of tuple containing question num and stems of ans
     q_num_ans_stem = [(q.question_number, stemmer.sent_2_stem(q.questionAns)) for q in questions]
     # print(q_num_ans_stem)
-    student_ans_list = StudentAns.objects.filter(exam=current_exam)
+    if not tobe_grade_question:
+        student_ans_list = StudentAns.objects.filter(exam=current_exam)
+    else:
+        student_ans_list = StudentAns.objects.filter(exam=current_exam, question_num=tobe_grade_question.question_number)
     for student_ans in student_ans_list:
         question_num = student_ans.question_num
         current_q_stems = [x[1] for x in q_num_ans_stem if x[0] == question_num]

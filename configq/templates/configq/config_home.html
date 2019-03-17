@@ -5,10 +5,12 @@
 {% endblock %}
 
 {% block content %}
-	<div class="col-md-8">
+	<div>
 		<h4 class="para-heading"> Config Home </h4>
+        {% if exam %}
+        <h6>Current working exam: {{ exam }} </h6>
+        {% else %}
+        <h6>No exam is selected. Please select an exam from exam config page.</h6>
+        {% endif %}
 	</div>
-	
-
-
 {% endblock %}

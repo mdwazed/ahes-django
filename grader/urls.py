@@ -1,4 +1,7 @@
-from django.urls import path
+
+# urls of grader app
+
+from django.urls import path, re_path
 
 from . import views
 
@@ -15,4 +18,7 @@ urlpatterns = [
     path('ans_details/<int:pk>', views.ans_details, name='ans_details'),
     path('ans_details/', views.ans_details, name='ans_details'),
     path('evaluate_ans_scripts/', views.evaluate_ans_scripts, name='evaluate_ans_scripts'),
+    path('change_threshold/', views.change_threshold, name='change_threshold'),
+    path('final_result', views.final_result, name='final_result'),
+
 ]
