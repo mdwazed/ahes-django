@@ -24,11 +24,14 @@ import pytesseract
 import json
 import os
 import sys
+import csv
 
 class ansScript:
     def __init__(self):
-        self.candidates = ['2488853', '2488854', '2488855', '2488856']
+        # self.candidates = ['2488853', '2488854', '2488855', '2488856', '1484854', '2486855', '2487853', '2487856']
         # self.candidates = readConfig.getCandidatesmat_number()
+        self.candidates = self.get_attendes()
+        # print(self.candidates)
         self.totalPage = 14
         self.a4size = (2480, 3508)
         self.readFileCount = 0
@@ -151,7 +154,21 @@ class ansScript:
         os.remove(os.path.join(self.rawPath, imageName))
         self.unreadFileCount += 1
             
+    def get_attendes(self):
+        print('getting attendees')
+        mat_nr_list = []
+        fileName = os.path.join(settings.BASE_DIR, 'grader/src/mat_nr.csv')
+        with open(fileName,'r') as csvfile:
+            csvreader = csv.reader(csvfile)
+            for row in csvreader:
+                for num in row:
+                    new_num = num.strip()
+                    mat_nr_list.append(new_num)
+        return mat_nr_list
+
+        
 if __name__ == "__main__":
     ansc = ansScript()
-    ansc.processAnsScript()
+    # ansc.processAnsScript()
     # ansc.readAns()
+    ansc.get_attendes()

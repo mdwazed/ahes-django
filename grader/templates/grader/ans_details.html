@@ -38,7 +38,7 @@
                     <h5>Matching confidence<br>{{ student_ans.matching_confidence }}</h5>                    
                 </div>
                 <div class="small-info-div">
-                    <h5>Threshold <button type="button" class="btn btn-link" id="btn-th-change">Change</button><br>{{ question.threshold }}</h5>
+                    <h5>Threshold <button type="button" class="btn btn-link" id="btn-th-change">Change</button><br><span id="th-val">{{ question.threshold }}</span></h5>
                     <div class="edit-th">
                         <form method="POST">
                             {% csrf_token %}
@@ -53,7 +53,15 @@
                     <h5>Auto grade<br> {{ student_ans.auto_grade }}</h5>
                 </div>
                 <div class="small-info-div">
-                    <h5>Final grade<br> 0 </h5>
+                    <h5>Final grade<button type="button" class="btn btn-link" id="btn-fg-change">Change</button><br><span id="fg-val">{{ student_ans.final_grade }}</span></h5>
+                    <div class="edit-fg">
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="text" class="form-control-sm col-4" id="text-new-fg">
+                            <input type="hidden" value="{{student_ans.pk}}" id="student-ans-id">
+                            <button class="btn btn-primary btn-sm" id="fg-save">Save</button>
+                        </form>
+                    </div>
                 </div>                
             </div>
             <hr>
@@ -80,6 +88,7 @@
 {% block javascript%}
 <script>
 $(document).ready(function(){
+    // change threshold
     $(".edit-th").hide();
     $("#btn-th-change").click(function(){
         console.log("change btn clicked");
@@ -90,6 +99,7 @@ $(document).ready(function(){
         var question_id = $("#question-id").val();
         var new_th = $("#text-new-th").val();
         console.log(question_id);
+        // ajax call to views
         $.post("/grader/change_threshold/", 
             {
                 question_id : question_id,
@@ -97,12 +107,40 @@ $(document).ready(function(){
                 csrfmiddlewaretoken: '{{ csrf_token }}'
             },
             function(data, status){
-                alert(data)
-                $("#form-ans-details").submit();
+                if(status == 'success'){
+                    $("#th-val").html(data.new_th);
+                    
+                }else{
+                    alert(data.error)
+                }
+                
+                // $("#form-ans-details").submit();
             }
             );
+    });
 
-        // location.reload();
+    // change final grade
+    $(".edit-fg").hide();
+    $("#btn-fg-change").click(function(){
+        console.log("fg change btn clicked");
+        $(".edit-fg").toggle(500);
+    });
+    $("#fg-save").click(function(){
+        event.preventDefault();
+        var student_ans_id = $("#student-ans-id").val();
+        var new_fg = $("#text-new-fg").val();
+        console.log(student_ans_id);
+        // ajax call to views
+        $.post("/grader/change_final_grade/", 
+            {
+                student_ans_id : student_ans_id,
+                new_fg : new_fg,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            function(data, status){
+                $("#fg-val").html(data.fg) 
+            }
+            );
     });
 });
 

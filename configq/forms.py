@@ -27,7 +27,41 @@ class SelectExamForm(forms.Form):
 	# exam = forms.CharField(widget=forms.Select(choices=get_exam_choices()))
 	exam = forms.ModelChoiceField(queryset=Exam.objects.all())
 
+class ExamModelForm(forms.ModelForm):
+	"""
+	Exam Model form to create a new exam and 
+	update an existing exam
+	"""
+	grade_5_0 = forms.CharField(label='Grade 5.0 <')
+	grade_4_0 = forms.CharField(label='Grade 4.0 >=')
+	grade_3_7 = forms.CharField(label='Grade 3.7 >=')
+	grade_3_3 = forms.CharField(label='Grade 3.3 >=')
+	grade_3_0 = forms.CharField(label='Grade 3.0 >=')
+	grade_2_7 = forms.CharField(label='Grade 2.7 >=')
+	grade_2_3 = forms.CharField(label='Grade 2.3 >=')
+	grade_2_0 = forms.CharField(label='Grade 2.0 >=')
+	grade_1_7 = forms.CharField(label='Grade 1.7 >=')
+	grade_1_3 = forms.CharField(label='Grade 1.3 >=')
+	grade_1_0 = forms.CharField(label='Grade 1.0 >=')
+	grade_0_7 = forms.CharField(label='Grade 0.7 >=')
+	class Meta:
+		model = Exam
+		exclude = ['course_name', 'semester', 'credit_point', 'exam_code']
+		
+
 class ExamConfigForm(forms.ModelForm):
+	grade_5_0 = forms.CharField(label='Grade 5.0 <', initial=50.00)
+	grade_4_0 = forms.CharField(label='Grade 4.0 >=', initial=50.00)
+	grade_3_7 = forms.CharField(label='Grade 3.7 >=', initial=55.00)
+	grade_3_3 = forms.CharField(label='Grade 3.3 >=', initial=60.00)
+	grade_3_0 = forms.CharField(label='Grade 3.0 >=', initial=65.00)
+	grade_2_7 = forms.CharField(label='Grade 2.7 >=', initial=70.00)
+	grade_2_3 = forms.CharField(label='Grade 2.3 >=', initial=75.00)
+	grade_2_0 = forms.CharField(label='Grade 2.0 >=', initial=80.00)
+	grade_1_7 = forms.CharField(label='Grade 1.7 >=', initial=85.00)
+	grade_1_3 = forms.CharField(label='Grade 1.3 >=', initial=90.00)
+	grade_1_0 = forms.CharField(label='Grade 1.0 >=', initial=95.00)
+	grade_0_7 = forms.CharField(label='Grade 0.7 >=', initial=99.00)
 	class Meta:
 		model = Exam
 		fields= '__all__'
@@ -66,7 +100,7 @@ class EditQuestionForm(forms.ModelForm):
 	questionAns = forms.CharField(max_length=200, widget=forms.Textarea(attrs={'rows': 2}),)
 	class Meta:
 		model = Question
-		exclude = ['exam']
+		exclude = ['exam', 'topLeftX', 'topLeftY', 'bottomRightX', 'bottomRightY']
 	
 
 # class NameForm(forms.Form):

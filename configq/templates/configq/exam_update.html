@@ -1,0 +1,20 @@
+{% extends 'configq_base_template.html' %}
+
+{% block title %}
+    AHES | Update Exam
+{% endblock %}
+
+{% block content %}
+    <div>
+        <h4 class="para-heading"> Update Exam </h4>
+        <form action="{% url 'configq:exam_update' %}" method="POST">
+            {% csrf_token %}
+            <table>
+                {{ form.as_table }}    
+
+            </table>
+            <input class="btn btn-primary" type="submit" value="Update">
+            
+        </form>
+    </div>
+{% endblock %}

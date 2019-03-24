@@ -7,6 +7,7 @@ app_name = 'configq'
 urlpatterns = [
     path('', views.home, name='home'),
     path('exam/', views.exam_config, name='exam_config'),
+    path('exam_update/', views.exam_update, name='exam_update'),
     path('select_exam/', views.select_exam, name='select_exam'),
     path('question_image_upload/', views.question_image_upload, name='question_image_upload'),
     path('show_question_image/', views.show_question_image, name='show_question_image'),

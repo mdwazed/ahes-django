@@ -1,0 +1,25 @@
+{% extends 'grader_base_template.html' %}
+
+{% block title %}
+    Home | Update grade thresh
+{% endblock %}
+
+{% block content %}
+    <div>
+        <div>
+            <h4 class="para-heading"> Update grade thresh</h4>          
+        </div>
+        <div>
+            <h6>All parameters are in % of total marks</h6>
+        <form action="{% url 'grader:update_exam_grade_thresh' %}" method="post">
+            {% csrf_token %}
+            <table>
+                {{ form.as_table }}
+            </table>
+            
+            <button type="submit">Update</button>
+        </form>
+                 
+        </div>      
+    </div>
+{% endblock %}

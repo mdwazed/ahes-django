@@ -1,13 +1,13 @@
 #### grader.views  ###
 
-from django.shortcuts import render, reverse, get_object_or_404
+from django.shortcuts import render, reverse, get_object_or_404, get_list_or_404
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.views.generic import ListView, FormView
 from django.core.files.storage import FileSystemStorage
 from django.db import IntegrityError
 
 from .models import StudentAns
-from .forms import UploadAnsScriptForm
+from .forms import UploadAnsScriptForm, ExamGradeUpdateForm
 
 from grader.src.preProcessAnsScript import ansScript
 from grader.src import ans_grader
@@ -91,7 +91,7 @@ def evaluate_ans_scripts(request):
 	auto grade the ans based on threshold and alloted marks  
 	"""
 	if request.method == 'POST':
-		ans_grader.grade_all_ans(request)
+		ans_grader.auto_grade_all_ans(request)
 		return HttpResponseRedirect(reverse('grader:ans_list'))
 
 def delete_ans(request):
@@ -151,10 +151,20 @@ def ans_details(request, pk=None):
 		all_ans = StudentAns.objects.filter(exam=exam)
 		option = request.POST['next_choice']
 		if (option == 'random'):
-			pass
+			# iter randomly
+			same_anss = all_ans
+			random_ans = random.choice(same_anss)
+			pk = random_ans.pk
 		elif(option == 'student'):
-			pass
+			# iter all ans of this student
+			id = request.POST['pk']
+			current_ans = all_ans.get(pk=id)
+			# get the next ans of this student
+			same_anss = all_ans.filter(exam=exam, matriculation_num=current_ans.matriculation_num)
+			random_ans = random.choice(same_anss)
+			pk = random_ans.pk
 		else:
+			# same question iter for random student
 			id = request.POST['pk']
 			current_ans = all_ans.get(pk=id)
 			# get a random pk of another ans with same question id 
@@ -193,34 +203,146 @@ def ans_details(request, pk=None):
 	return render(request, 'grader/ans_details.html', context)
 
 def change_threshold(request):
-	print("ajax request received")
+	"""
+	change threshold of a question during examiners reevaluation.
+	also re-evaluate the result based on new threshold.
+	"""
+	# print("ajax request received")
 	question_id = request.POST['question_id']
 	new_th = request.POST['new_th']
-	print(question_id)
-	print(new_th)
-	# return JsonResponse(question_id, safe=False)
-	
+	# print(question_id)
+	# print(new_th)
 	try:
 		question = get_object_or_404(Question, pk=question_id)
 		question.threshold = new_th
 		question.save()
-		
-		# return JsonResponse(question_id, safe=False)
 	except:
 		return JsonResponse("problem occured while changing the threshold", safe=False)
 	try:
-		ans_grader.grade_all_ans(request, question) 
+		ans_grader.auto_grade_all_ans(request, question) 
 	except:
 		return JsonResponse("failed to re evaluate ans", safe=False)
-	return JsonResponse("Threshold changed successfuly with re evaluation of ans", safe=False)
+	return_dict = {
+	'new_th':question.threshold,
+	'error': "Failed to update the threshold"
+	}
+	return JsonResponse(return_dict)
 
+def change_final_grade(request):
+	"""
+	change final grade of a student_ans 
+	this will not be ovrwritten by auto grade
+	"""
+	# print(request.POST)
+	student_ans = get_object_or_404(StudentAns, pk=request.POST['student_ans_id'])
+	print(student_ans)
+	student_ans.final_grade = request.POST['new_fg']
+	student_ans.manually_graded = True
+	student_ans.save()
+	return_dict = {
+	'fg':student_ans.final_grade
+	}
+	return JsonResponse(return_dict)
+
+def finalize_result(request):
+	exam = get_exam(request)
+	student_anss = StudentAns.objects.filter(exam=exam)
+	for ans in student_anss:
+		if not ans.manually_graded:
+			ans.final_grade = ans.auto_grade
+			ans.save()
+	return HttpResponseRedirect(reverse('grader:ans_list'))
 
 
 def final_result(request):
-	
-	context = {
+	exam = get_exam(request)
+	appeared = StudentAns.objects.filter(exam=exam).values('matriculation_num').distinct()
+	appeared_list = [x['matriculation_num'] for x in appeared]
+	total_appeared = len(appeared_list)
+	grades = [0,0,0,0,0,0,0,0,0,0,0,0,]
+	results = []
+	for mat_num in appeared_list:
+		achieved_marks = 0
+		ans_list = StudentAns.objects.filter(exam=exam, matriculation_num=mat_num)
+		for ans in ans_list:
+			achieved_marks += ans.final_grade
+		total_marks = exam.total_marks
+		achieved_percentage = (achieved_marks/total_marks)*100
 
+		if(achieved_percentage < exam.grade_5_0):
+			grade = 5.00
+			grades[11] += 1
+		elif(achieved_percentage >= exam.grade_4_0 and achieved_percentage < exam.grade_3_7):
+			grade= 4.00
+			grades[10] += 1
+		elif(achieved_percentage >= exam.grade_3_7 and achieved_percentage < exam.grade_3_3):
+			grade= 3.70
+			grades[9] += 1
+		elif(achieved_percentage >= exam.grade_3_3 and achieved_percentage < exam.grade_3_0):
+			grade= 3.30
+			grades[8] += 1
+		elif(achieved_percentage >= exam.grade_3_0 and achieved_percentage < exam.grade_2_7):
+			grade= 3.00
+			grades[7] += 1
+		elif(achieved_percentage >= exam.grade_2_7 and achieved_percentage < exam.grade_2_3):
+			grade= 2.70
+			grades[6] += 1
+		elif(achieved_percentage >= exam.grade_2_3 and achieved_percentage < exam.grade_2_0):
+			grade= 2.30
+			grades[5] += 1
+		elif(achieved_percentage >= exam.grade_2_0 and achieved_percentage < exam.grade_1_7):
+			grade= 2.00
+			grades[4] += 1
+		elif(achieved_percentage >= exam.grade_1_7 and achieved_percentage < exam.grade_1_3):
+			grade= 1.70
+			grades[3] += 1
+		elif(achieved_percentage >= exam.grade_1_3 and achieved_percentage < exam.grade_1_0):
+			grade= 1.30
+			grades[2] += 1
+		elif(achieved_percentage >= exam.grade_1_0 and achieved_percentage < exam.grade_0_7):
+			grade= 1.00
+			grades[1] += 1
+		elif(achieved_percentage >= exam.grade_0_7):
+			grade= 0.70
+			grades[0] += 1
+		results.append((mat_num, achieved_marks, grade))
+
+	count_p_f = [0,0]
+	for result in results:
+		if result[2]< 5.0:
+			count_p_f[0] += 1
+		else:
+			count_p_f[1] += 1
+	context = {
+	'total_appeared': total_appeared,
+	'total_marks': total_marks,
+	'results': results,
+	'grades': grades,
+	'count_p_f': count_p_f,
 	}
 	
 	return render(request, 'grader/final_result.html', context)
 
+# def highchart(request):
+# 	return render (request, 'grader/highchart_test.html',)	
+
+def update_exam_grade_thresh(request):
+	exam = get_exam(request)
+	if request.method == 'POST':
+		# return HttpResponse("posted")
+		form = ExamGradeUpdateForm(request.POST, instance=exam)
+		if form.is_valid():
+			form.save()
+			return HttpResponseRedirect(reverse('grader:final_result'))
+	form = ExamGradeUpdateForm(instance=exam)
+	context = {
+	'form': form,
+	}
+
+	return render(request, 'grader/exam_grade_update_thresh.html', context)
+
+def publish_result(request):
+	context = {
+	'error': "Export the result to somewhere"
+	}
+	return render(request, 'grader/custom_error.html', context)

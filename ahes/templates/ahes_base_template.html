@@ -15,6 +15,7 @@
   <!-- Add additional CSS in static file -->
   <link rel="stylesheet" href="{% static 'css/base_style.css' %}">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://code.highcharts.com/highcharts.src.js"></script>
 </head>
 <body>
   <div class="container">
@@ -45,6 +46,7 @@
     </div>    
   </div>
   <script src="{% static 'js/main_js.js' %}"></script>
-  {% block javascript %} {% endblock %}
+  {% block javascript %}
+  {% endblock %}
 </body>
 </html>

@@ -22,6 +22,7 @@ class StudentAns(models.Model):
     matching_confidence = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
     auto_grade = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
     final_grade = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
+    manually_graded = models.BooleanField(default=False)
 
     class Meta:
         unique_together= ('exam', 'matriculation_num', 'question_num')

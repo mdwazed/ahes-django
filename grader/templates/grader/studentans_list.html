@@ -69,13 +69,17 @@
                     {% endfor %}
                 </tbody>        
             </table>
-          
-            <form action="{% url 'grader:delete_ans' %}" method="POST">
-                {% csrf_token %}
-                <input type="submit" name="submit" value="Delete all">                    
-            </form>
-
-
+            <div>
+                <form action="{% url 'grader:delete_ans' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="submit" name="submit" value="Delete all">                    
+                </form>
+                <form action="{% url 'grader:finalize_result' %}" method="POST">
+                    {% csrf_token %}
+                    <input class="btn btn-primary" type="submit" name="submit" value="Finalize Result">                    
+                </form>
+               
+            </div>
                   
         </div>      
     </div>

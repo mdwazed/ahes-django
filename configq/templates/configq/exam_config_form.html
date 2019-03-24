@@ -11,6 +11,7 @@
 			{% if exam %}
 				<h5>Current selected Exam</h5>
 				<p>{{ exam }} <br> Professor: {{ exam.professor }} <br> Exam code: {{ exam.exam_code }}</p>
+				<a class="btn btn-primary" href="{% url 'configq:exam_update' %}">Edit Exam</a>
 			{% endif %}
 			<h4>Select an Exam</h4>
 			<!-- select exam to work on by setting in session var -->

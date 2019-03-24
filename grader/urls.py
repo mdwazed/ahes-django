@@ -19,6 +19,9 @@ urlpatterns = [
     path('ans_details/', views.ans_details, name='ans_details'),
     path('evaluate_ans_scripts/', views.evaluate_ans_scripts, name='evaluate_ans_scripts'),
     path('change_threshold/', views.change_threshold, name='change_threshold'),
+    path('change_final_grade/', views.change_final_grade, name='change_final_grade'),
     path('final_result', views.final_result, name='final_result'),
-
+    path('finalize_result', views.finalize_result, name='finalize_result'),
+    path('publish_result', views.publish_result, name='publish_result'),
+    path('update_exam_grade_thresh', views.update_exam_grade_thresh, name='update_exam_grade_thresh'),
 ]

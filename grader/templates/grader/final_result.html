@@ -5,9 +5,78 @@
 {% endblock %}
 
 {% block content %}
-    <div class="col-md-8">
+    <div>
         <div>
             <h4 class="para-heading"> Final result </h4>
         </div>
+        <div id="result-sum-chart">
+            <h6>Nominal Distribution</h6>
+        </div>
+        <div>
+            grades
+        </div>
+        <div>
+            <h6>Total appeared:&nbsp{{ total_appeared }}</h6>
+            <h6>Total passed: {{ count_p_f.0 }}</h6>
+            <h6>Total failed: {{ count_p_f.1 }}</h6>
+            <h6>Pass percentage:</h6>
+            <h6>Total Marks:&nbsp {{ total_marks }}</h6>
+        </div>
+        <hr>
+        <a class="btn btn-primary" href="{% url 'grader:update_exam_grade_thresh' %}">Change Exam Grade %</a>
+        <a class="btn btn-primary" href="{% url 'grader:publish_result' %}">Publish Result</a>
+        <hr>
+        
+        
+        <div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Matriculation Nr.</th>
+                        <th scope="col">Marks</th>
+                        <th scope="col">Grade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for mat_num, marks, grade in results %}
+                    <tr>
+                        <th scope="row">{{mat_num}}</th>
+                        <td>{{ marks }}</td>
+                        <td>{{ grade }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+
+    Highcharts.chart('result-sum-chart', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'Nominal Distribution of Grades',
+    },
+    yAxis: {
+        title:{
+            text: 'Number of students',
+        },
+    },
+    xAxis: {
+        title: {
+            text : 'Grades',
+        },
+        categories: ['0.7', '1.0', '1.3', '1.7', '2.0', '2.3', '2.7', '3.0', '3.3', '3.7', '4.0', '5.0']
+    },
+    series: [{
+        name: 'students',
+        data: [{{grades.0}}, {{grades.1}}, {{grades.2}}, {{grades.3}}, {{grades.4}}, {{grades.5}}, {{grades.6}}, {{grades.7}}, {{grades.8}}, {{grades.9}}, {{grades.10}}, {{grades.11}},  ],
+    },]
+});
+</script>
+
 {% endblock %}

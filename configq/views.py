@@ -7,8 +7,8 @@ from . import misc_function
 from .models import Exam, Question, UploadQuestion, PageConfig
 from .forms import (
 	ExamConfigForm, QuestionConfigForm, QuestionImageUploadForm, 
-	UploadForm, PreQuestionConfigForm, SelectExamForm, PageConfigForm, EditQuestionForm
-	)
+	UploadForm, PreQuestionConfigForm, SelectExamForm, PageConfigForm, EditQuestionForm,
+	 ExamModelForm)
 
 # Create your views here.
 def home(request):
@@ -66,7 +66,22 @@ def exam_config(request):
 		}
 		return render(request, 'configq/exam_config_form.html', context)
 
-
+def exam_update(request):
+	"""
+	edit exam parameters including grading threshold
+	"""
+	exam = misc_function.get_exam(request)
+	if request.method == 'POST':
+		form = ExamModelForm(request.POST, instance=exam)
+		if form.is_valid():
+			form.save()
+			return HttpResponseRedirect(reverse('configq:exam_config'))
+	form = ExamModelForm(instance=exam)
+	context = {
+	'form': form,
+	'exam': exam,
+	}
+	return render(request, 'configq/exam_update.html', context)
 
 def pre_question_config(request):
 	"""
