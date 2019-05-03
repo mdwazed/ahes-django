@@ -1,5 +1,5 @@
 from django.db import models
-from configq.models import UploadQuestion, PageConfig, Exam
+from configq.models import UploadQuestion, PageConfig, Exam, Question
 
 # Create your models here.
 
@@ -27,3 +27,11 @@ class StudentAns(models.Model):
     class Meta:
         unique_together= ('exam', 'matriculation_num', 'question_num')
 
+
+    def __str__(self):
+        return('mat_no:'+self.matriculation_num+'--'+'Question_no'+self.question_num)
+    @property
+    def alloted_marks(self):
+        question = Question.objects.get(exam=self.exam, question_number=self.question_num)
+        # return question.allotedMarks
+        return question.allotedMarks

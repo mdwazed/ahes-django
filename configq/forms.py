@@ -85,19 +85,19 @@ class PreQuestionConfigForm(forms.Form):
 	
 class QuestionConfigForm(forms.Form):
 	question_number = forms.CharField(max_length=5,)
-	allotedMarks = forms.IntegerField()
+	allotedMarks = forms.DecimalField()
 	threshold = forms.DecimalField()
 	top_left_x = forms.IntegerField()
 	top_left_y = forms.IntegerField()
 	bottom_right_x = forms.IntegerField()
 	bottom_right_y = forms.IntegerField()	
 	# coord = forms.CharField(max_length=10)
-	question_text = forms.CharField(max_length=200, widget=forms.Textarea(attrs={'rows': 2}),)
-	question_answer = forms.CharField(max_length=200, widget=forms.Textarea(attrs={'rows': 2}),)
+	question_text = forms.CharField(max_length=500, widget=forms.Textarea(attrs={'rows': 4, 'cols': 70}),)
+	question_answer = forms.CharField(max_length=500, widget=forms.Textarea(attrs={'rows': 4, 'cols': 70}),)
 
 class EditQuestionForm(forms.ModelForm):
-	questionText = forms.CharField(max_length=200, widget=forms.Textarea(attrs={'rows': 2}),)
-	questionAns = forms.CharField(max_length=200, widget=forms.Textarea(attrs={'rows': 2}),)
+	questionText = forms.CharField(max_length=500, widget=forms.Textarea(attrs={'rows': 4, 'cols': 70}),)
+	questionAns = forms.CharField(max_length=500, widget=forms.Textarea(attrs={'rows': 4, 'cols': 70}),)
 	class Meta:
 		model = Question
 		exclude = ['exam', 'topLeftX', 'topLeftY', 'bottomRightX', 'bottomRightY']

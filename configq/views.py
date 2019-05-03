@@ -284,7 +284,7 @@ def question_list(request):
 		}
 		return render(request, 'configq/common_error.html', context)
 	questions = Question.objects.filter(exam= exam).order_by('question_number')
-	return render(request, 'configq/question_list.html', {'questions':questions})
+	return render(request, 'configq/question_list.html', {'questions':questions, 'exam': exam})
 
 
 

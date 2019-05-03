@@ -49,6 +49,7 @@
                             <a href="{% url 'grader:ans_list_ordered' 'matriculation_num' %}"><i class="fas fa-angle-double-down"></i></a>
                         </th>
                         <th>Matching confidence</th>
+                        <th>Alloted marks</th>
                         <th>Auto grade</th>
                         <th>final grade</th>
                         <th></th>
@@ -62,6 +63,7 @@
                         <td>{{ ans.students_ans }}</td>
                         <td>{{ ans.matriculation_num }}</td>
                         <td>{{ ans.matching_confidence }}</td>
+                        <td>{{ ans.alloted_marks }}</td>
                         <td>{{ ans.auto_grade }}</td>
                         <td>{{ ans.final_grade }}</td>
                         <td><a href="{% url 'grader:ans_details' ans.pk %}">Details</a></td>

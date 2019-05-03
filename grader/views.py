@@ -180,7 +180,8 @@ def ans_details(request, pk=None):
 
 	question = get_object_or_404(Question, exam=exam, question_number=student_ans.question_num)
 	page_num = question.page
-	image_name = str(exam.id) +'_'+ str(student_ans.matriculation_num) +'_'+ str(page_num) + '.png'
+	# image_name = str(exam.id) +'_'+ str(student_ans.matriculation_num) +'_'+ str(page_num) + '.png'
+	image_name = str(exam.id) +'_'+ str(student_ans.matriculation_num) +'_'+ str(page_num) + '.jpg'
 	top_x = question.topLeftX
 	top_y = question.topLeftY
 	bottom_x = question.bottomRightX
@@ -305,7 +306,7 @@ def final_result(request):
 		elif(achieved_percentage >= exam.grade_0_7):
 			grade= 0.70
 			grades[0] += 1
-		results.append((mat_num, achieved_marks, grade))
+		results.append((mat_num, achieved_marks, achieved_percentage, grade))
 
 	count_p_f = [0,0]
 	for result in results:

@@ -26,7 +26,8 @@ class Stemmer():
         word_list = tokenizer.tokenize(sent)
         clean_list = word_list[:]
         for word in word_list:
-            if word in stopwords.words('english'):
+            # if word in stopwords.words('english'):
+            if word in stopwords.words('german'):
                 clean_list.remove(word)
         return clean_list
 

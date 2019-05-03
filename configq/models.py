@@ -64,7 +64,7 @@ class Question(models.Model):
 	bottomRightX = models.SmallIntegerField()
 	bottomRightY = models.SmallIntegerField()	
 	questionText = models.TextField(max_length = 500)
-	questionAns = models.TextField(max_length = 200)
+	questionAns = models.TextField(max_length = 500)
 
 	class Meta:
 		unique_together = ('exam', 'page', 'question_number')

@@ -34,14 +34,16 @@
                     <tr>
                         <th scope="col">Matriculation Nr.</th>
                         <th scope="col">Marks</th>
+                        <th scope="col">%</th>
                         <th scope="col">Grade</th>
                     </tr>
                 </thead>
                 <tbody>
-                {% for mat_num, marks, grade in results %}
+                {% for mat_num, marks,percentage, grade in results %}
                     <tr>
                         <th scope="row">{{mat_num}}</th>
                         <td>{{ marks }}</td>
+                        <td>{{ percentage|floatformat:2 }}%</td>
                         <td>{{ grade }}</td>
                     </tr>
                 {% endfor %}

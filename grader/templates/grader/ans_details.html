@@ -35,10 +35,13 @@
             <hr>
             <div style="display: flex;">
                 <div class="small-info-div">
-                    <h5>Matching confidence<br>{{ student_ans.matching_confidence }}</h5>                    
+                    <p>Matching confidence<br>{{ student_ans.matching_confidence }}</p>         
                 </div>
                 <div class="small-info-div">
-                    <h5>Threshold <button type="button" class="btn btn-link" id="btn-th-change">Change</button><br><span id="th-val">{{ question.threshold }}</span></h5>
+                    <p>Alloted Marks<br>{{ student_ans.alloted_marks }}</p>         
+                </div>
+                <div class="small-info-div">
+                    <p>Threshold <button type="button" class="btn btn-link" id="btn-th-change">Change</button><br><span id="th-val">{{ question.threshold }}</span></p>
                     <div class="edit-th">
                         <form method="POST">
                             {% csrf_token %}
@@ -50,10 +53,10 @@
                     
                 </div>
                 <div class="small-info-div">
-                    <h5>Auto grade<br> {{ student_ans.auto_grade }}</h5>
+                    <p>Auto grade<br> {{ student_ans.auto_grade }}</p>
                 </div>
                 <div class="small-info-div">
-                    <h5>Final grade<button type="button" class="btn btn-link" id="btn-fg-change">Change</button><br><span id="fg-val">{{ student_ans.final_grade }}</span></h5>
+                    <p>Final grade<button type="button" class="btn btn-link" id="btn-fg-change">Change</button><br><span id="fg-val">{{ student_ans.final_grade }}</span></p>
                     <div class="edit-fg">
                         <form method="POST">
                             {% csrf_token %}

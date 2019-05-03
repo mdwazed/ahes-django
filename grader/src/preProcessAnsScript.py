@@ -32,7 +32,7 @@ class ansScript:
         # self.candidates = readConfig.getCandidatesmat_number()
         self.candidates = self.get_attendes()
         # print(self.candidates)
-        self.totalPage = 14
+        self.totalPage = 20
         self.a4size = (2480, 3508)
         self.readFileCount = 0
         self.unreadFileCount = 0
@@ -63,7 +63,7 @@ class ansScript:
             fileName = os.path.join(self.rawPath, imageName)
             with Image.open(fileName) as im:
                 # im = Image.open(fileName)
-                im = im.convert('L')
+                # im = im.convert('L')
                 im = im.resize(self.a4size)
             
                 if int(im_page_nr) not in range(1,self.totalPage):
@@ -115,7 +115,12 @@ class ansScript:
                     region = im.crop(question[2:])  
                     # region.show() 
                     # sys.exit()    
-                    ans = pytesseract.image_to_string(region, lang= 'eng')
+                    try:
+                        print(f"reading question no:{questionNo} from region {region}")
+                        ans = pytesseract.image_to_string(region, lang= 'eng')
+                    except Exception as e:
+                        print(f"failed to read question no {questionNo}. error:{str(e)}")
+                    # ans = pytesseract.image_to_string(region, lang= 'ger')
                     ans = ans.replace('\n', ' ')
                     student_ans = StudentAns(
                         exam=current_exam,
@@ -125,8 +130,9 @@ class ansScript:
                     )
                     
                     student_ans.save() ### save students ans to dbase
+                    print(student_ans)
 
-                    studentsAns.append([mat_number, questionNo, ans]) # append student ans in studentAns.json
+                    # studentsAns.append([mat_number, questionNo, ans]) # append student ans in studentAns.json
                     
 
         student_ans_file = os.path.join(settings.BASE_DIR, 'studentAns.json')
