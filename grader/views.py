@@ -180,16 +180,20 @@ def ans_details(request, pk=None):
 
 	question = get_object_or_404(Question, exam=exam, question_number=student_ans.question_num)
 	page_num = question.page
+	# uncomment the appropriate line to choose the correct img ext.
 	# image_name = str(exam.id) +'_'+ str(student_ans.matriculation_num) +'_'+ str(page_num) + '.png'
 	image_name = str(exam.id) +'_'+ str(student_ans.matriculation_num) +'_'+ str(page_num) + '.jpg'
 	top_x = question.topLeftX
 	top_y = question.topLeftY
 	bottom_x = question.bottomRightX
 	bottom_y = question.bottomRightY
-	# get the related image crop the specific part and pass to ttemplate as base64 encoded data 
-	img_path = os.path.join(settings.MEDIA_ROOT, 'cleaned_image' ,image_name)
-	img = cv.imread(img_path)
-	sub_img = img[top_y:bottom_y, top_x:bottom_x]
+	# get the related image crop the specific part and pass to template as base64 encoded data 
+	img_path = os.path.join(settings.MEDIA_ROOT, 'cleaned_image', image_name)
+	try:
+		img = cv.imread(img_path)
+		sub_img = img[top_y:bottom_y, top_x:bottom_x]
+	except Exception as e:
+		return HttpResponse("could not read the subimage. check img ext on line 184/185." + str(e))
 	ret, frame_buff = cv.imencode('.png', sub_img)
 	frame_b64 = base64.b64encode(frame_buff)
 	frame_b64 = frame_b64.decode('utf8')
