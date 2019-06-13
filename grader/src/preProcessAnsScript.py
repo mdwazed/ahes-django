@@ -114,10 +114,13 @@ class ansScript:
                     questionNo = question[0]
                     region = im.crop(question[2:])  
                     # region.show() 
-                    # sys.exit()    
+                    # sys.exit()   
+                    # ##################################
+                    # ### change API here ##############
+                    # ################################## 
                     try:
                         print(f"reading question no:{questionNo} from region {region}")
-                        ans = pytesseract.image_to_string(region, lang= 'eng')
+                        ans = pytesseract.image_to_string(region, lang= 'deu')
                     except Exception as e:
                         print(f"failed to read question no {questionNo}. error:{str(e)}")
                     # ans = pytesseract.image_to_string(region, lang= 'ger')

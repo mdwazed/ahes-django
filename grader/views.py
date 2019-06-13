@@ -108,8 +108,8 @@ class StudentsAnsList(ListView):
 	def get_queryset(self):
 		order = self.kwargs.get('order', None)
 		if order:
-			return StudentAns.objects.filter(exam= get_exam(self.request)).order_by(order, 'matching_confidence')
-		return StudentAns.objects.filter(exam= get_exam(self.request)).order_by('question_num')
+			return StudentAns.objects.filter(exam= get_exam(self.request)).order_by(order, 'matching_confidence')[:50]
+		return StudentAns.objects.filter(exam= get_exam(self.request)).order_by('question_num')[:50]
 
 	def post(self, request, *args, **kwargs):
 		ques_nr = request.POST['ques_nr']
