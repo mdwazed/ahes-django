@@ -1,5 +1,5 @@
 # ahes-django
-An on going project related to my masters thesis at TU Darmstadt. The project aims to evaluate the students exam script (text based) automatically. The project consists of two modules Configq and Grader.
+A project related to my masters thesis at TU Darmstadt. The project aims to evaluate the students exam script (text based) automatically. The project consists of two modules Configq and Grader.
 
 The first module "Configq" is used to configure the exam and questions. Examiner needs to upload all the pages of the exam script first. Then s/he will be able to configure each question by providing information like alloted marks, actual answer, threshlold for considering the student answer correct etc. At this stage examiner also needs to interactively select the designated area where the students will write their answer. This is typically a rectengle under each question on the exam script where students will write their answer. The module also provides other usual features like edit, update of the config as required. 
 
